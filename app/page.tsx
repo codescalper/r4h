@@ -9,6 +9,7 @@ import { useTheme } from "next-themes"
 import { Bebas_Neue, Lora } from "next/font/google"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -88,7 +89,9 @@ function Navbar({ currentPage, setCurrentPage }: { currentPage: PageKey; setCurr
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
         {/* Logo */}
         <button onClick={() => setCurrentPage("home")} className="flex items-center gap-2">
-          <Image src="/logo.png" alt="Run4Health" width={140} height={40} className="object-contain" />
+          <div className="w-10 h-10 rounded-full overflow-hidden border border-border bg-card flex items-center justify-center">
+            <Image src="/logo.png" alt="Run4Health" width={36} height={36} className="object-contain" />
+          </div>
         </button>
 
         {/* Desktop Nav */}
@@ -118,27 +121,48 @@ function Navbar({ currentPage, setCurrentPage }: { currentPage: PageKey; setCurr
         </div>
 
         {/* Mobile hamburger */}
-        <div className="flex lg:hidden items-center gap-2">
+        <div className="flex lg:hidden items-center gap-1">
           <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon"><Menu className="w-5 h-5" /></Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-64">
-              <div className="flex flex-col gap-4 mt-8">
+            <SheetContent side="right" className="w-[min(85vw,22rem)] p-0 flex flex-col">
+              {/* Sheet header */}
+              <div className="flex items-center gap-3 px-6 py-5 border-b border-border">
+                <div className="w-9 h-9 rounded-full overflow-hidden border border-border bg-card flex items-center justify-center shrink-0">
+                  <Image src="/logo.png" alt="Run4Health" width={32} height={32} className="object-contain" />
+                </div>
+                <div>
+                  <p className={`${bebasNeue.className} tracking-wider text-base text-foreground leading-none`}>Run4Health</p>
+                  <p className={`${lora.className} text-xs text-muted-foreground`}>Fitness First</p>
+                </div>
+              </div>
+
+              {/* Nav links */}
+              <nav className="flex flex-col px-3 py-4 flex-1">
                 {links.map((l) => (
                   <button
                     key={l.page}
                     onClick={() => setCurrentPage(l.page)}
-                    className={`${lora.className} text-base font-medium text-left py-1 border-b border-border/40 transition-colors hover:text-primary`}
+                    className={`${lora.className} flex items-center gap-3 w-full text-left px-4 py-3.5 rounded-xl text-sm font-medium transition-colors ${
+                      currentPage === l.page
+                        ? "bg-primary/10 text-primary"
+                        : "text-foreground hover:bg-muted"
+                    }`}
                   >
+                    {currentPage === l.page && <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />}
                     {l.label}
                   </button>
                 ))}
-                <Button onClick={() => setCurrentPage("register")} className="mt-2 gap-1">
+              </nav>
+
+              {/* CTA buttons */}
+              <div className="flex flex-col gap-3 px-5 pb-8 pt-4 border-t border-border">
+                <Button onClick={() => setCurrentPage("register")} className="w-full gap-2">
                   <UserPlus className="w-4 h-4" /> Join Now
                 </Button>
-                <Button variant="outline" onClick={() => setCurrentPage("donate")} className="gap-1">
+                <Button variant="outline" onClick={() => setCurrentPage("donate")} className="w-full gap-2 border-primary text-primary hover:bg-primary/10">
                   <Heart className="w-4 h-4" /> Donate
                 </Button>
               </div>
@@ -215,6 +239,51 @@ function useCountUp(target: number, duration = 1800) {
   return { count, ref }
 }
 
+// ─── Gallery Carousel (autoplay) ─────────────────────────────────────────────
+function GalleryCarousel({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
+  const [api, setApi] = useState<CarouselApi>()
+
+  useEffect(() => {
+    if (!api) return
+    const timer = setInterval(() => api.scrollNext(), 3000)
+    return () => clearInterval(timer)
+  }, [api])
+
+  const items = [
+    { g: "from-primary/30 to-primary/10", label: "Marathon 2025" },
+    { g: "from-accent/30 to-accent/10", label: "Yoga Sessions" },
+    { g: "from-primary/20 to-accent/20", label: "Health Camp" },
+    { g: "from-accent/20 to-primary/10", label: "Diwali Fun Run" },
+    { g: "from-primary/25 to-primary/5", label: "Team Training" },
+    { g: "from-accent/25 to-primary/15", label: "Community Day" },
+  ]
+
+  return (
+    <Carousel opts={{ align: "start", loop: true }} setApi={setApi} className="w-full">
+      <CarouselContent className="-ml-3">
+        {items.map((item, i) => (
+          <CarouselItem key={i} className="pl-3 basis-1/2 sm:basis-1/3 lg:basis-1/4">
+            <div
+              className={`relative h-44 sm:h-52 rounded-xl bg-gradient-to-br ${item.g} flex flex-col items-center justify-center group cursor-pointer overflow-hidden`}
+              onClick={() => setCurrentPage("gallery")}
+            >
+              <Camera className="w-8 h-8 text-primary/40" />
+              <span className={`${lora.className} text-xs text-primary/60 mt-2`}>{item.label}</span>
+              <div className="absolute inset-0 bg-foreground/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                <p className={`${lora.className} text-primary-foreground text-xs font-medium flex items-center gap-1`}>
+                  <Camera className="w-3.5 h-3.5" /> View Gallery
+                </p>
+              </div>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious className="-left-4" />
+      <CarouselNext className="-right-4" />
+    </Carousel>
+  )
+}
+
 // ─── PAGE 1: Home ─────────────────────────────────────────────────────────────
 function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
   const stats = [
@@ -254,35 +323,35 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
           <div className="absolute inset-0" style={{ background: "linear-gradient(120deg, var(--primary) 0%, transparent 55%)", opacity: 0.06 }} />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full grid lg:grid-cols-2 gap-12 items-center pt-24 pb-16">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full grid lg:grid-cols-2 gap-10 lg:gap-12 items-center pt-28 pb-16 sm:pt-32 sm:pb-20">
           {/* Left: Text */}
           <div>
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-              <Badge variant="outline" className="mb-4 border-primary/50 text-primary font-medium px-3 py-1">
-                <Zap className="w-3 h-3 mr-1" /> Thane&apos;s #1 Fitness Community
-              </Badge>
+              <div className="inline-flex items-center gap-2 mb-4 bg-primary text-primary-foreground rounded-full px-4 py-1.5 text-xs font-semibold shadow-sm">
+                <Zap className="w-3 h-3" /> Thane&apos;s #1 Fitness Community
+              </div>
             </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-              className={`${bebasNeue.className} text-7xl sm:text-8xl lg:text-9xl leading-none tracking-wider text-foreground`}
+              className={`${bebasNeue.className} text-[clamp(4rem,14vw,9rem)] leading-none tracking-wider text-foreground`}
             >
               RUN FOR<br />
               <span className="text-primary">HEALTH</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
-              className={`${lora.className} text-lg text-muted-foreground mt-5 max-w-md leading-relaxed`}
+              className={`${lora.className} text-base sm:text-lg text-muted-foreground mt-4 sm:mt-5 max-w-md leading-relaxed`}
             >
               A community movement transforming lives through fitness, one stride at a time.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-              className="flex flex-wrap gap-3 mt-8"
+              className="flex flex-wrap gap-3 mt-6 sm:mt-8"
             >
-              <Button size="lg" onClick={() => setCurrentPage("register")} className="gap-2 text-base px-6">
+              <Button size="lg" onClick={() => setCurrentPage("register")} className="gap-2 text-sm sm:text-base px-5 sm:px-6">
                 Join Now <ArrowRight className="w-4 h-4" />
               </Button>
-              <Button size="lg" variant="outline" onClick={() => setCurrentPage("donate")} className="gap-2 text-base px-6 border-primary text-primary hover:bg-primary/10">
+              <Button size="lg" variant="outline" onClick={() => setCurrentPage("donate")} className="gap-2 text-sm sm:text-base px-5 sm:px-6 border-primary text-primary hover:bg-primary/10">
                 <Heart className="w-4 h-4" /> Donate Now
               </Button>
             </motion.div>
@@ -290,7 +359,7 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
             {/* Floating stat pills */}
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }}
-              className="flex flex-wrap gap-3 mt-8"
+              className="flex flex-wrap gap-2 mt-6 sm:mt-8"
             >
               {["2,400+ Members","150+ Events","₹12L+ Raised"].map((s) => (
                 <span key={s} className={`${lora.className} text-xs bg-primary/10 text-primary border border-primary/20 rounded-full px-3 py-1.5 font-medium`}>
@@ -337,13 +406,13 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
       </section>
 
       {/* ── About Preview ── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
         <div className="grid lg:grid-cols-2 gap-8 items-start">
           <motion.div whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 40 }} viewport={{ once: true }}>
             <Card className="border-primary/20 bg-primary/5 h-full">
-              <CardContent className="p-8">
+              <CardContent className="p-5 sm:p-8">
                 <Badge className="mb-4 bg-primary/20 text-primary border-0">Our Mission</Badge>
-                <blockquote className={`${bebasNeue.className} text-3xl sm:text-4xl tracking-wide text-foreground leading-tight`}>
+                <blockquote className={`${bebasNeue.className} text-2xl sm:text-3xl lg:text-4xl tracking-wide text-foreground leading-tight`}>
                   "Empowering communities through movement, health education, and collective action."
                 </blockquote>
                 <Separator className="my-6" />
@@ -385,15 +454,15 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
       </section>
 
       {/* ── Programs ── */}
-      <section className="py-20 bg-muted/30" style={{ clipPath: "polygon(0 3%, 100% 0, 100% 97%, 0 100%)" }}>
+      <section className="py-14 sm:py-20 bg-muted/30" style={{ clipPath: "polygon(0 2%, 100% 0, 100% 98%, 0 100%)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
           <motion.div whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} viewport={{ once: true }} className="mb-10">
             <p className={`${lora.className} text-sm text-primary font-medium mb-1`}>What we offer</p>
             <h2 className={`${bebasNeue.className} text-5xl sm:text-6xl tracking-wider text-foreground`}>WHAT WE DO</h2>
           </motion.div>
-          <div className="flex gap-5 overflow-x-auto snap-x pb-4">
+          <div className="flex gap-4 sm:gap-5 overflow-x-auto snap-x pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:grid lg:grid-cols-3">
             {programs.map((p, i) => (
-              <motion.div key={p.title} whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 40 }} transition={{ delay: i * 0.15 }} viewport={{ once: true }} whileHover={{ y: -4 }} className="snap-start shrink-0 w-72 sm:w-80">
+              <motion.div key={p.title} whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 40 }} transition={{ delay: i * 0.15 }} viewport={{ once: true }} whileHover={{ y: -4 }} className="snap-start shrink-0 w-[80vw] sm:w-80 lg:w-auto">
                 <Card className="h-full border-border hover:border-primary/40 transition-all duration-200 overflow-hidden">
                   <div className={`h-28 bg-gradient-to-br ${p.color} flex items-center justify-center`}>
                     <div className="text-primary opacity-60">{p.icon}</div>
@@ -413,14 +482,14 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
       </section>
 
       {/* ── Stats Bar ── */}
-      <section className="bg-primary py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-2 sm:grid-cols-4 gap-6 text-primary-foreground text-center">
+      <section className="bg-primary py-10 sm:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 text-primary-foreground text-center">
           {stats.map((s) => {
             const { count, ref } = useCountUp(s.value)
             return (
               <div key={s.label} ref={ref}>
-                <p className={`${bebasNeue.className} text-5xl tracking-wider`}>{count}{s.suffix}</p>
-                <p className={`${lora.className} text-sm opacity-80 mt-1`}>{s.label}</p>
+                <p className={`${bebasNeue.className} text-4xl sm:text-5xl tracking-wider`}>{count}{s.suffix}</p>
+                <p className={`${lora.className} text-xs sm:text-sm opacity-80 mt-1`}>{s.label}</p>
               </div>
             )
           })}
@@ -428,12 +497,12 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
       </section>
 
       {/* ── Testimonials ── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
-        <motion.div whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} viewport={{ once: true }} className="mb-10">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+        <motion.div whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} viewport={{ once: true }} className="mb-8 sm:mb-10">
           <p className={`${lora.className} text-sm text-primary font-medium mb-1`}>Community voices</p>
-          <h2 className={`${bebasNeue.className} text-5xl sm:text-6xl tracking-wider text-foreground`}>VOICES FROM OUR COMMUNITY</h2>
+          <h2 className={`${bebasNeue.className} text-4xl sm:text-5xl lg:text-6xl tracking-wider text-foreground`}>VOICES FROM OUR COMMUNITY</h2>
         </motion.div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {testimonials.map((t, i) => (
             <motion.div key={t.name} whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 40 }} transition={{ delay: i * 0.15 }} viewport={{ once: true }} whileHover={{ y: -4 }}>
               <Card className="h-full border-border hover:border-primary/30 transition-all">
@@ -459,16 +528,16 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
       </section>
 
       {/* ── Latest News ── */}
-      <section className="bg-muted/20 py-20">
+      <section className="bg-muted/20 py-14 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <motion.div whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} viewport={{ once: true }} className="flex items-end justify-between mb-10">
+          <motion.div whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} viewport={{ once: true }} className="flex items-end justify-between mb-8 sm:mb-10">
             <div>
               <p className={`${lora.className} text-sm text-primary font-medium mb-1`}>Stay informed</p>
-              <h2 className={`${bebasNeue.className} text-5xl sm:text-6xl tracking-wider text-foreground`}>LATEST NEWS</h2>
+              <h2 className={`${bebasNeue.className} text-4xl sm:text-5xl lg:text-6xl tracking-wider text-foreground`}>LATEST NEWS</h2>
             </div>
             <Button variant="outline" onClick={() => setCurrentPage("news")} className="gap-1 hidden sm:flex border-primary/30 text-primary">View All <ArrowRight className="w-4 h-4" /></Button>
           </motion.div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {news.map((n, i) => (
               <motion.div key={n.title} whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 40 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }} whileHover={{ y: -4 }}>
                 <Card className="h-full overflow-hidden border-border hover:border-primary/30 transition-all">
@@ -494,34 +563,15 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
       </section>
 
       {/* ── Gallery Preview ── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
-        <motion.div whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} viewport={{ once: true }} className="flex items-end justify-between mb-10">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+        <motion.div whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} viewport={{ once: true }} className="flex items-end justify-between mb-8 sm:mb-10">
           <div>
             <p className={`${lora.className} text-sm text-primary font-medium mb-1`}>Our memories</p>
-            <h2 className={`${bebasNeue.className} text-5xl sm:text-6xl tracking-wider text-foreground`}>GALLERY</h2>
+            <h2 className={`${bebasNeue.className} text-4xl sm:text-5xl lg:text-6xl tracking-wider text-foreground`}>GALLERY</h2>
           </div>
           <Button variant="outline" onClick={() => setCurrentPage("gallery")} className="hidden sm:flex gap-1 border-primary/30 text-primary">See Full Gallery <ArrowRight className="w-4 h-4" /></Button>
         </motion.div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {[
-            "from-primary/30 to-primary/10",
-            "from-accent/30 to-accent/10",
-            "from-primary/20 to-accent/20",
-            "from-accent/20 to-primary/10",
-            "from-primary/25 to-primary/5",
-            "from-accent/25 to-primary/15",
-          ].map((g, i) => (
-            <motion.div key={i} whileInView={{ opacity: 1, scale: 1 }} initial={{ opacity: 0, scale: 0.95 }} transition={{ delay: i * 0.08 }} viewport={{ once: true }}
-              className={`relative h-36 sm:h-48 rounded-lg bg-gradient-to-br ${g} flex items-center justify-center group cursor-pointer overflow-hidden`}
-              onClick={() => setCurrentPage("gallery")}
-            >
-              <Camera className="w-8 h-8 text-primary/30" />
-              <div className="absolute inset-0 bg-foreground/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                <p className={`${lora.className} text-primary-foreground text-xs font-medium`}>View Gallery</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        <GalleryCarousel setCurrentPage={setCurrentPage} />
       </section>
     </div>
   )
