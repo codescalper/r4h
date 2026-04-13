@@ -182,9 +182,9 @@ function Navbar() {
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 function Hero() {
   const statPills = [
-    { label: "2,400+ Members", icon: <Users className="size-3.5" /> },
+    { label: "50+ Members", icon: <Users className="size-3.5" /> },
     { label: "150+ Events", icon: <Calendar className="size-3.5" /> },
-    { label: "₹12L+ Raised", icon: <Heart className="size-3.5" /> },
+    { label: "₹50k+ Raised", icon: <Heart className="size-3.5" /> },
   ]
 
   const container = {
@@ -779,7 +779,7 @@ function CTABanner() {
               READY TO TAKE THE FIRST STEP?
             </h2>
             <p className="font-lora text-primary-foreground/80 text-base max-w-lg">
-              Join 2,400+ community members already living healthier, stronger lives.
+              Join 50+ community members already living healthier, stronger lives.
               Your journey begins with one run.
             </p>
           </div>

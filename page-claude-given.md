@@ -292,7 +292,7 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }}
               className="flex flex-wrap gap-3 mt-8"
             >
-              {["2,400+ Members","150+ Events","₹12L+ Raised"].map((s) => (
+              {["50+ Members","150+ Events","₹50k+ Raised"].map((s) => (
                 <span key={s} className={`${lora.className} text-xs bg-primary/10 text-primary border border-primary/20 rounded-full px-3 py-1.5 font-medium`}>
                   {s}
                 </span>
@@ -365,9 +365,9 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             {[
-              { label: "Members", value: "2,400+", icon: <Users className="w-5 h-5" /> },
+              { label: "Members", value: "50+", icon: <Users className="w-5 h-5" /> },
               { label: "Events Hosted", value: "150+", icon: <Calendar className="w-5 h-5" /> },
-              { label: "Funds Raised", value: "₹12L+", icon: <DollarSign className="w-5 h-5" /> },
+              { label: "Funds Raised", value: "₹50k+", icon: <DollarSign className="w-5 h-5" /> },
               { label: "Years Active", value: "8 Yrs", icon: <Trophy className="w-5 h-5" /> },
             ].map((s, i) => (
               <motion.div key={s.label} whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
@@ -1649,10 +1649,10 @@ function AdminPage() {
                 <h2 className={`${bebasNeue.className} text-3xl tracking-wide text-foreground mb-6`}>DASHBOARD</h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                   {[
-                    { label: "Total Members", value: "2,400", icon: <Users className="w-5 h-5" /> },
+                    { label: "Total Members", value: "50", icon: <Users className="w-5 h-5" /> },
                     { label: "Pending Approvals", value: "8", icon: <Activity className="w-5 h-5" /> },
                     { label: "News Submissions", value: "3", icon: <Newspaper className="w-5 h-5" /> },
-                    { label: "Total Raised", value: "₹12L", icon: <DollarSign className="w-5 h-5" /> },
+                    { label: "Total Raised", value: "₹50k", icon: <DollarSign className="w-5 h-5" /> },
                   ].map(s => (
                     <Card key={s.label} className="border-border">
                       <CardContent className="p-5 flex items-center gap-3">
