@@ -5,7 +5,7 @@ import { MapPin, Phone, Mail } from "lucide-react"
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
 const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
 
-type PageKey = "home" | "about" | "programs" | "news" | "register" | "dashboard" | "donate" | "gallery" | "contact" | "admin"
+type PageKey = "home" | "about" | "programs" | "news" | "register" | "donate" | "gallery" | "contact"
 
 // ─── Footer ──────────────────────────────────────────────────────────────────
 function Footer({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
@@ -39,7 +39,7 @@ function Footer({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
       </div>
       <div className="border-t border-border py-4 text-center">
         <p className={`${lora.className} text-xs text-muted-foreground`}>
-          Made with ❤️ for community health · <button onClick={() => setCurrentPage("admin")} className="hover:text-primary underline underline-offset-2">Admin</button>
+          Made with ❤️ for community health · <a href="/admin/login" className="hover:text-primary underline underline-offset-2">Admin</a>
         </p>
       </div>
     </footer>

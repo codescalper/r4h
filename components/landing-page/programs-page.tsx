@@ -16,7 +16,7 @@ import { Dumbbell, Calendar, MapPin, CheckCircle, ArrowRight } from "lucide-reac
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
 const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
 
-type PageKey = "home" | "about" | "programs" | "news" | "register" | "dashboard" | "donate" | "gallery" | "contact" | "admin"
+type PageKey = "home" | "about" | "programs" | "news" | "register" | "donate" | "gallery" | "contact"
 
 // ─── PAGE 3: Programs ─────────────────────────────────────────────────────────
 function ProgramsPage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {

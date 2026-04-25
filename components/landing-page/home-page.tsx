@@ -16,7 +16,7 @@ import GalleryCarousel from "./gallery-carousel"
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
 const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
 
-type PageKey = "home" | "about" | "programs" | "news" | "register" | "dashboard" | "donate" | "gallery" | "contact" | "admin"
+type PageKey = "home" | "about" | "programs" | "news" | "register" | "donate" | "gallery" | "contact"
 
 // ─── Intro Splash ──────────────────────────────────────────────────────────────
 function IntroSplash() {
@@ -166,7 +166,7 @@ function IntroSplash() {
   )
 }
 
-// ─── PAGE 1: Home ─────────────────────────────────────────────────────────────
+// ─── PAGE 1: Home ──────────
 function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
   const [introVisible, setIntroVisible] = useState(true)
 

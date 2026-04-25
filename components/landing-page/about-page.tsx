@@ -12,7 +12,7 @@ import { Zap, TrendingUp, Users, Activity, Heart, ChevronRight } from "lucide-re
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
 const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
 
-type PageKey = "home" | "about" | "programs" | "news" | "register" | "dashboard" | "donate" | "gallery" | "contact" | "admin"
+type PageKey = "home" | "about" | "programs" | "news" | "register" | "donate" | "gallery" | "contact"
 
 // ─── PAGE 2: About ────────────────────────────────────────────────────────────
 function AboutPage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {

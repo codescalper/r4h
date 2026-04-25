@@ -1,0 +1,165 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Admin ───────────────────────────────────────────────────────────────────
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String   @default("Admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  passwordResetTokens AdminPasswordResetToken[]
+}
+
+model AdminPasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  adminId   String
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// ─── Member ───────────────────────────────────────────────────────────────────
+
+enum MemberStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum FitnessLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model Member {
+  id String @id @default(cuid())
+
+  // Personal Info
+  firstName       String
+  lastName        String
+  email           String       @unique
+  phone           String
+  dateOfBirth     DateTime?
+  age             Int?
+  gender          Gender
+  city            String
+  emergencyContact String?
+
+  // Health Info
+  height          Float?
+  weight          Float?
+  thighSize       Float?
+  waistSize       Float?
+  sleepHours      Float?
+  fitnessLevel    FitnessLevel @default(BEGINNER)
+  medicalConditions String?
+
+  // Files (relative paths stored, served from /uploads/...)
+  profilePhotoPath     String?
+  medicalReportPath    String?
+
+  // Auth
+  password        String?
+  status          MemberStatus @default(PENDING)
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  passwordResetTokens   MemberPasswordResetToken[]
+  setPasswordTokens     MemberSetPasswordToken[]
+  donations             Donation[]
+  healthRecords         HealthRecord[]
+}
+
+model MemberPasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model MemberSetPasswordToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// ─── Health Records ──────────────────────────────────────────────────────────
+
+model HealthRecord {
+  id          String   @id @default(cuid())
+  memberId    String
+  member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  weight      Float?
+  height      Float?
+  thighSize   Float?
+  waistSize   Float?
+  sleepHours  Float?
+  notes       String?
+  recordedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+// ─── Donations ───────────────────────────────────────────────────────────────
+
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  UPI
+  CARD
+  NET_BANKING
+  CASH
+  OTHER
+}
+
+model Donation {
+  id            String         @id @default(cuid())
+  donorName     String
+  donorEmail    String
+  donorPhone    String?
+  amount        Float
+  currency      String         @default("INR")
+  paymentMethod PaymentMethod  @default(UPI)
+  message       String?
+  status        DonationStatus @default(PENDING)
+  memberId      String?
+  member        Member?        @relation(fields: [memberId], references: [id], onDelete: SetNull)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+

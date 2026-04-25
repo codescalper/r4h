@@ -12,7 +12,7 @@ import ThemeToggle from "./theme-toggle"
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
 const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
 
-type PageKey = "home" | "about" | "programs" | "news" | "register" | "dashboard" | "donate" | "gallery" | "contact" | "admin"
+type PageKey = "home" | "about" | "programs" | "news" | "register" | "donate" | "gallery" | "contact"
 
 // ─── Navbar ──────────────────────────────────────────────────────────────────
 function Navbar({ currentPage, setCurrentPage }: { currentPage: PageKey; setCurrentPage: (p: PageKey) => void }) {
@@ -65,12 +65,15 @@ function Navbar({ currentPage, setCurrentPage }: { currentPage: PageKey; setCurr
         {/* Right */}
         <div className="hidden lg:flex items-center gap-2">
           <ThemeToggle />
-          <Button size="sm" onClick={() => setCurrentPage("register")} className="gap-1">
-            Join Now
-          </Button>
-          <Button size="sm" variant="outline" onClick={() => setCurrentPage("donate")} className="gap-1 border-primary text-primary hover:bg-primary/10">
-            Donate
-          </Button>
+          <a href="/member/login" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors px-2 py-1">
+            Member Login
+          </a>
+          <a href="/join">
+            <Button size="sm" className="gap-1">Join Now</Button>
+          </a>
+          <a href="/donate">
+            <Button size="sm" variant="outline" className="gap-1 border-primary text-primary hover:bg-primary/10">Donate</Button>
+          </a>
         </div>
 
         {/* Mobile hamburger */}
@@ -112,12 +115,15 @@ function Navbar({ currentPage, setCurrentPage }: { currentPage: PageKey; setCurr
 
               {/* CTA buttons */}
               <div className="flex flex-col gap-3 px-5 pb-8 pt-4 border-t border-border">
-                <Button onClick={() => setCurrentPage("register")} className="w-full gap-2">
-                  Join Now
-                </Button>
-                <Button variant="outline" onClick={() => setCurrentPage("donate")} className="w-full gap-2 border-primary text-primary hover:bg-primary/10">
-                  Donate
-                </Button>
+                <a href="/join" className="block">
+                  <Button className="w-full gap-2">Join Now</Button>
+                </a>
+                <a href="/donate" className="block">
+                  <Button variant="outline" className="w-full gap-2 border-primary text-primary hover:bg-primary/10">Donate</Button>
+                </a>
+                <a href="/member/login" className="text-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2">
+                  Already a member? Log in →
+                </a>
               </div>
             </SheetContent>
           </Sheet>

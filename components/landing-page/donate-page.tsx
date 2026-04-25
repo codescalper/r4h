@@ -14,15 +14,64 @@ import useCountUp from "./use-count-up"
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
 const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
 
-type PageKey = "home" | "about" | "programs" | "news" | "register" | "dashboard" | "donate" | "gallery" | "contact" | "admin"
+type PageKey = "home" | "about" | "programs" | "news" | "register" | "donate" | "gallery" | "contact"
 
 // ─── PAGE 7: Donations ────────────────────────────────────────────────────────
 function DonatePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
-  const [amount, setAmount] = useState("")
+  const [amountPreset, setAmountPreset] = useState("")
   const [custom, setCustom] = useState(false)
-  const presets = ["₹100","₹500","₹1000","₹5000","Custom"]
+  const [customAmount, setCustomAmount] = useState("")
+  const [donorName, setDonorName] = useState("")
+  const [donorEmail, setDonorEmail] = useState("")
+  const [donorPhone, setDonorPhone] = useState("")
+  const [paymentMethod, setPaymentMethod] = useState("UPI")
+  const [message, setMessage] = useState("")
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState("")
+  const presets = ["100","500","1000","5000"]
 
   const { count: raised, ref: raisedRef } = useCountUp(1200000, 2000)
+
+  const finalAmount = custom ? customAmount : amountPreset
+
+  async function handleDonate() {
+    setSubmitError("")
+    if (!finalAmount || Number(finalAmount) < 1) { setSubmitError("Please enter a valid amount."); return }
+    if (!donorName.trim()) { setSubmitError("Please enter your name."); return }
+    if (!donorEmail.trim()) { setSubmitError("Please enter your email."); return }
+    setSubmitting(true)
+    try {
+      const res = await fetch("/api/donations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ donorName, donorEmail, donorPhone, amount: Number(finalAmount), paymentMethod, message }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setSubmitError(data.error || "Something went wrong."); return }
+      setSubmitted(true)
+    } catch {
+      setSubmitError("Connection error. Please try again.")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  if (submitted) return (
+    <div className="min-h-screen flex items-center justify-center pt-20 px-4">
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md">
+        <Heart className="w-16 h-16 text-primary mx-auto mb-4" />
+        <h2 className={`${bebasNeue.className} text-5xl tracking-wider text-foreground mb-3`}>THANK YOU!</h2>
+        <p className={`${lora.className} text-muted-foreground mb-2`}>
+          Your donation of <strong>₹{Number(finalAmount).toLocaleString("en-IN")}</strong> has been received.
+        </p>
+        <p className={`${lora.className} text-sm text-muted-foreground mb-6`}>
+          A confirmation has been sent to <strong>{donorEmail}</strong>.
+        </p>
+        <Button onClick={() => setCurrentPage("home")} className="gap-1">Back to Home <DollarSign className="w-4 h-4" /></Button>
+      </motion.div>
+    </div>
+  )
 
   return (
     <div className="min-h-screen pt-20">
@@ -53,18 +102,33 @@ function DonatePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }
                 <Label className={`${lora.className} font-medium text-sm`}>Select Amount</Label>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {presets.map(p => (
-                    <Button key={p} size="sm" variant={amount === p && !custom || (custom && p === "Custom") ? "default" : "outline"}
-                      onClick={() => { if (p === "Custom") { setCustom(true); setAmount("") } else { setCustom(false); setAmount(p) } }}
+                    <Button key={p} size="sm" variant={amountPreset === p && !custom ? "default" : "outline"}
+                      onClick={() => { setCustom(false); setAmountPreset(p) }}
                       className="border-primary/30"
-                    >{p}</Button>
+                    >₹{Number(p).toLocaleString("en-IN")}</Button>
+                  ))}
+                  <Button size="sm" variant={custom ? "default" : "outline"} onClick={() => { setCustom(true); setAmountPreset("") }} className="border-primary/30">Custom</Button>
+                </div>
+                {custom && <Input className="mt-2" placeholder="Enter custom amount (₹)" type="number" value={customAmount} onChange={e => setCustomAmount(e.target.value)} />}
+              </div>
+              <div><Label>Your Name *</Label><Input className="mt-1" placeholder="Rahul Sharma" value={donorName} onChange={e => setDonorName(e.target.value)} /></div>
+              <div><Label>Email *</Label><Input className="mt-1" placeholder="rahul@email.com" type="email" value={donorEmail} onChange={e => setDonorEmail(e.target.value)} /></div>
+              <div><Label>Phone (optional)</Label><Input className="mt-1" placeholder="+91 98765 43210" value={donorPhone} onChange={e => setDonorPhone(e.target.value)} /></div>
+              <div>
+                <Label>Payment Method</Label>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {["UPI","CARD","NET_BANKING","CASH","OTHER"].map(m => (
+                    <Button key={m} size="sm" variant={paymentMethod === m ? "default" : "outline"} onClick={() => setPaymentMethod(m)} className="border-primary/30 text-xs">{m.replace("_"," ")}</Button>
                   ))}
                 </div>
-                {custom && <Input className="mt-2" placeholder="Enter custom amount (₹)" type="number" value={amount} onChange={e => setAmount(e.target.value)} />}
               </div>
-              <div><Label>Donor Name</Label><Input className="mt-1" placeholder="Rahul Sharma" /></div>
-              <div><Label>Email</Label><Input className="mt-1" placeholder="rahul@email.com" /></div>
-              <div><Label>Message (optional)</Label><Textarea className="mt-1 h-20" placeholder="A message of support..." /></div>
-              <Button className="w-full gap-2 text-base" size="lg"><Heart className="w-4 h-4" /> Donate Now</Button>
+              <div><Label>Message (optional)</Label><Textarea className="mt-1 h-20" placeholder="A message of support..." value={message} onChange={e => setMessage(e.target.value)} /></div>
+
+              {submitError && <div className="px-3 py-2 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs">{submitError}</div>}
+
+              <Button className="w-full gap-2 text-base" size="lg" onClick={handleDonate} disabled={submitting}>
+                {submitting ? "Processing…" : <><Heart className="w-4 h-4" /> Donate Now</>}
+              </Button>
               <p className={`${lora.className} text-xs text-center text-muted-foreground`}>Powered by Razorpay — integration ready</p>
               <div className="flex justify-around pt-2">
                 {[
