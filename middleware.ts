@@ -30,9 +30,14 @@ export async function middleware(request: NextRequest) {
 
   // ─── Redirect /member/login if already authenticated ─────────────────────
   if (pathname === '/member/login') {
-    const token = request.cookies.get('r4h_member_token')?.value;
-    if (token && (await verifyTokenEdge(token))) {
+    const memberToken = request.cookies.get('r4h_member_token')?.value;
+    if (memberToken && (await verifyTokenEdge(memberToken))) {
       return NextResponse.redirect(new URL('/member/dashboard', request.url));
+    }
+    // Admin visiting member login → send to admin dashboard
+    const adminToken = request.cookies.get('r4h_admin_token')?.value;
+    if (adminToken && (await verifyTokenEdge(adminToken))) {
+      return NextResponse.redirect(new URL('/admin/dashboard', request.url));
     }
   }
 

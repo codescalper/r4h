@@ -168,11 +168,18 @@ function IntroSplash() {
 
 // ─── PAGE 1: Home ──────────
 function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
-  const [introVisible, setIntroVisible] = useState(true)
+  const [introVisible, setIntroVisible] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setIntroVisible(false), 2500)
-    return () => clearTimeout(timer)
+    const KEY = 'r4h_splash_date'
+    const today = new Date().toDateString()
+    const lastShown = localStorage.getItem(KEY)
+    if (lastShown !== today) {
+      setIntroVisible(true)
+      localStorage.setItem(KEY, today)
+      const timer = setTimeout(() => setIntroVisible(false), 2800)
+      return () => clearTimeout(timer)
+    }
   }, [])
 
   const stats = [

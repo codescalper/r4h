@@ -9,14 +9,46 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Bebas_Neue, Lora } from "next/font/google"
-import { CheckCircle, MapPin, Phone, Mail } from "lucide-react"
+import { CheckCircle, MapPin, Phone, Mail, Loader2 } from "lucide-react"
 
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
 const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
 
 // ─── PAGE 9: Contact ──────────────────────────────────────────────────────────
 function ContactPage() {
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [subject, setSubject] = useState("")
+  const [message, setMessage] = useState("")
+  const [submitting, setSubmitting] = useState(false)
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState("")
+
+  async function handleSubmit() {
+    if (!name.trim() || !email.trim() || !subject || !message.trim()) {
+      setError("Please fill in all fields.")
+      return
+    }
+    setError("")
+    setSubmitting(true)
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, subject, message }),
+      })
+      if (res.ok) {
+        setSent(true)
+      } else {
+        const data = await res.json()
+        setError(data.error ?? "Failed to send. Please try again.")
+      }
+    } catch {
+      setError("Network error. Please try again.")
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <div className="min-h-screen pt-20">
@@ -61,19 +93,32 @@ function ContactPage() {
               ) : (
                 <div className="space-y-4">
                   <h2 className={`${bebasNeue.className} text-3xl tracking-wide text-foreground mb-2`}>SEND A MESSAGE</h2>
-                  <div><Label>Name</Label><Input className="mt-1" placeholder="Rahul Sharma" /></div>
-                  <div><Label>Email</Label><Input className="mt-1" placeholder="rahul@email.com" /></div>
+                  <div>
+                    <Label>Name</Label>
+                    <Input className="mt-1" placeholder="Rahul Sharma" value={name} onChange={e => setName(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label>Email</Label>
+                    <Input className="mt-1" placeholder="rahul@email.com" type="email" value={email} onChange={e => setEmail(e.target.value)} />
+                  </div>
                   <div>
                     <Label>Subject</Label>
-                    <Select>
+                    <Select value={subject} onValueChange={setSubject}>
                       <SelectTrigger className="mt-1"><SelectValue placeholder="Select subject" /></SelectTrigger>
                       <SelectContent>
-                        {["General Inquiry","Event Registration","Donation","Media","Partnership"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                        {["General Inquiry", "Event Registration", "Donation", "Media", "Partnership"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div><Label>Message</Label><Textarea className="mt-1 h-28" placeholder="Tell us how we can help..." /></div>
-                  <Button className="w-full gap-2" onClick={() => setSent(true)}><Mail className="w-4 h-4" /> Send Message</Button>
+                  <div>
+                    <Label>Message</Label>
+                    <Textarea className="mt-1 h-28" placeholder="Tell us how we can help..." value={message} onChange={e => setMessage(e.target.value)} />
+                  </div>
+                  {error && <p className={`${lora.className} text-sm text-destructive`}>{error}</p>}
+                  <Button className="w-full gap-2" onClick={handleSubmit} disabled={submitting}>
+                    {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+                    {submitting ? "Sending…" : "Send Message"}
+                  </Button>
                 </div>
               )}
             </CardContent>

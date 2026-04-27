@@ -20,6 +20,9 @@ model Admin {
   updatedAt DateTime @updatedAt
 
   passwordResetTokens AdminPasswordResetToken[]
+  posts               Post[]
+  galleryImages       GalleryImage[]
+  programs            Program[]
 }
 
 model AdminPasswordResetToken {
@@ -92,6 +95,7 @@ model Member {
   setPasswordTokens     MemberSetPasswordToken[]
   donations             Donation[]
   healthRecords         HealthRecord[]
+  posts                 Post[]
 }
 
 model MemberPasswordResetToken {
@@ -161,5 +165,136 @@ model Donation {
   member        Member?        @relation(fields: [memberId], references: [id], onDelete: SetNull)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+}
+
+// ─── Posts / News / Blog ─────────────────────────────────────────────────────
+
+enum PostStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PostAuthorType {
+  ADMIN
+  MEMBER
+}
+
+enum PostCategory {
+  EVENT_RECAP
+  HEALTH_TIPS
+  COMMUNITY_STORY
+  ANNOUNCEMENT
+}
+
+model Post {
+  id             String         @id @default(cuid())
+  title          String
+  slug           String         @unique
+  excerpt        String?
+  content        String         @db.Text
+  coverImagePath String?
+  category       PostCategory   @default(ANNOUNCEMENT)
+  status         PostStatus     @default(DRAFT)
+  authorType     PostAuthorType @default(MEMBER)
+  adminId        String?
+  admin          Admin?         @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  memberId       String?
+  member         Member?        @relation(fields: [memberId], references: [id], onDelete: SetNull)
+  rejectionNote  String?
+  publishedAt    DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  images         PostImage[]
+}
+
+model PostImage {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  path      String
+  altText   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// ─── Gallery ──────────────────────────────────────────────────────────────────
+
+model GalleryImage {
+  id        String         @id @default(cuid())
+  path      String
+  altText   String?
+  caption   String?
+  adminId   String?
+  admin     Admin?         @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  createdAt DateTime       @default(now())
+
+  tags      GalleryTagsOnImages[]
+}
+
+model GalleryTag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  images    GalleryTagsOnImages[]
+}
+
+model GalleryTagsOnImages {
+  imageId   String
+  image     GalleryImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  tagId     String
+  tag       GalleryTag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([imageId, tagId])
+}
+
+// ─── Programs & Events ────────────────────────────────────────────────────────
+
+enum ProgramCategory {
+  MARATHON
+  YOGA
+  CAMP
+  CORPORATE
+  FUN_RUN
+  OTHER
+}
+
+enum ProgramStatus {
+  UPCOMING
+  PAST
+  CANCELLED
+}
+
+model Program {
+  id             String          @id @default(cuid())
+  title          String
+  slug           String?         @unique
+  excerpt        String?
+  content        String          @db.Text
+  coverImagePath String?
+  date           DateTime?
+  location       String?
+  category       ProgramCategory @default(OTHER)
+  status         ProgramStatus   @default(UPCOMING)
+  adminId        String?
+  admin          Admin?          @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+// ─── Contact Submissions ──────────────────────────────────────────────────────
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
 }
 

@@ -1,14 +1,22 @@
 import Image from "next/image"
+import Link from "next/link"
 import { Bebas_Neue, Lora } from "next/font/google"
 import { MapPin, Phone, Mail } from "lucide-react"
 
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
 const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
 
-type PageKey = "home" | "about" | "programs" | "news" | "register" | "donate" | "gallery" | "contact"
+const footerLinks: { label: string; href: string }[] = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Programs", href: "/programs" },
+  { label: "News", href: "/news" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Contact", href: "/contact" },
+]
 
 // ─── Footer ──────────────────────────────────────────────────────────────────
-function Footer({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
+function Footer() {
   return (
     <footer className="bg-card border-t border-border mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -18,8 +26,8 @@ function Footer({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
         </div>
         <div>
           <p className={`${bebasNeue.className} tracking-wider text-base text-foreground mb-3`}>Quick Links</p>
-          {(["home","about","programs","news","gallery","contact"] as PageKey[]).map(p => (
-            <button key={p} onClick={() => setCurrentPage(p)} className={`${lora.className} block text-sm text-muted-foreground hover:text-primary capitalize py-0.5`}>{p}</button>
+          {footerLinks.map(l => (
+            <Link key={l.href} href={l.href} className={`${lora.className} block text-sm text-muted-foreground hover:text-primary capitalize py-0.5`}>{l.label}</Link>
           ))}
         </div>
         <div>
@@ -39,7 +47,7 @@ function Footer({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
       </div>
       <div className="border-t border-border py-4 text-center">
         <p className={`${lora.className} text-xs text-muted-foreground`}>
-          Made with ❤️ for community health · <a href="/admin/login" className="hover:text-primary underline underline-offset-2">Admin</a>
+          Made with ❤️ for community health · <Link href="/admin/login" className="hover:text-primary underline underline-offset-2">Admin</Link>
         </p>
       </div>
     </footer>

@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -43,21 +45,20 @@ export default function AdminLoginPage() {
         <ellipse cx="50%" cy="50%" rx="32%" ry="28%" fill="none" stroke="currentColor" strokeOpacity="0.06" strokeWidth="1.5" strokeDasharray="10 7" className="r4h-dash"/>
       </svg>
 
-      {/* Runner silhouette — decorative */}
-      <svg aria-hidden="true" className="pointer-events-none absolute bottom-10 right-8 opacity-[0.06] dark:opacity-[0.04] w-48 h-48 text-primary" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="78" cy="16" r="9" fill="currentColor"/>
-        <path d="M78 25 C74 38 68 48 62 58 L50 82 M78 25 C84 38 92 48 106 56" stroke="currentColor" strokeWidth="8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M62 58 C56 70 50 80 44 96 M62 58 C70 70 74 82 72 97" stroke="currentColor" strokeWidth="7" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M72 35 C62 42 54 46 44 44 M84 35 C92 40 100 48 106 56" stroke="currentColor" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
 
       <div className="w-full max-w-md relative z-10">
+        {/* Back button */}
+        <div className="mb-4 text-left">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+            Back to site
+          </Link>
+        </div>
+
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-primary-foreground text-2xl font-black mb-4 shadow-lg shadow-primary/20">
-            <svg viewBox="0 0 40 40" className="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-label="R">
-              <text x="6" y="30" fontSize="26" fontWeight="900" fontFamily="system-ui,sans-serif">R</text>
-            </svg>
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-card border border-border mb-4 shadow-lg shadow-primary/20 overflow-hidden">
+            <Image src="/logo.png" alt="Run4Health" width={56} height={56} className="object-contain" priority />
           </div>
           <h1 className="text-3xl font-black text-foreground tracking-tight">Run4Health</h1>
           <p className="text-muted-foreground mt-1 text-sm">Admin Portal</p>

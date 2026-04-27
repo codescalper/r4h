@@ -18,9 +18,8 @@
   .info-box { background: #fdf8ec; border: 1px solid #f0d070; border-left: 4px solid #c89418; border-radius: 8px; padding: 20px 24px; margin: 24px 0; }
   .info-box p { font-size: 14px; color: #5a4010; line-height: 1.6; }
   .steps { margin: 24px 0; }
-  .step { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
-  .step-num { background: #c89418; color: #fff; width: 26px; height: 26px; border-radius: 50%; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; line-height: 1; text-align: center; padding-top: 1px; }
-  .step p { font-size: 14px; color: #3f3f46; line-height: 1.5; padding-top: 3px; }
+  .step { margin-bottom: 12px; font-size: 14px; color: #3f3f46; line-height: 1.6; }
+  .step strong { color: #18181b; }
   .footer { background: #f4f4f5; padding: 24px 32px; text-align: center; border-top: 1px solid #e4e4e7; }
   .footer p { font-size: 12px; color: #71717a; line-height: 1.6; }
   .footer a { color: #c89418; text-decoration: none; }
@@ -53,27 +52,12 @@
       <p><strong>What happens next?</strong></p>
       <p style="margin-top: 8px;">Our admin team typically reviews applications within <strong>2–3 business days</strong>. You'll receive a separate email once a decision has been made.</p>
     </div>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <p><strong>Application submitted</strong> — Done! We've received all your details.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <p><strong>Review in progress</strong> — Our team is verifying your information.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <p><strong>Decision email</strong> — You'll be notified by email about the outcome.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <p><strong>Set your password</strong> — If approved, you'll get a secure link to set your password.</p>
-      </div>
-    </div>
-    <p class="text" style="margin-top: 8px;">
-      Questions? Reach us at <a href="mailto:{{supportEmail}}" style="color: #c89418;">{{supportEmail}}</a>.
-    </p>
+    <ol class="steps" style="padding-left: 22px;">
+      <li class="step"><strong>Application submitted</strong> — Done! We've received all your details.</li>
+      <li class="step"><strong>Review in progress</strong> — Our team is verifying your information.</li>
+      <li class="step"><strong>Decision email</strong> — You'll be notified by email about the outcome.</li>
+      <li class="step"><strong>Set your password</strong> — If approved, you'll get a secure link to set your password.</li>
+    </ol>
     <p class="text">Keep moving!</p>
     <p style="font-size:15px; font-weight: 600; color: #c89418;">— The Run4Health Team</p>
   </div>

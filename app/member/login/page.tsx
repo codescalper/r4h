@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function MemberLoginPage() {
   const router = useRouter();
@@ -53,15 +55,17 @@ export default function MemberLoginPage() {
       </svg>
 
       <div className="w-full max-w-md relative z-10">
+        {/* Back button */}
+        <div className="mb-4 text-left">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+            Back to site
+          </Link>
+        </div>
+
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-primary-foreground mb-4 shadow-lg shadow-primary/20">
-            {/* Inline runner SVG logo */}
-            <svg viewBox="0 0 40 40" className="w-9 h-9" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Runner">
-              <circle cx="26" cy="7" r="4" fill="currentColor"/>
-              <path d="M26 11 C24 16 21 20 18 24 L13 33 M26 11 C29 16 33 20 39 22" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M18 24 C15 28 13 32 10 38 M18 24 C21 28 23 33 22 38" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M23 16 C19 19 16 20 12 19 M29 16 C32 18 35 22 37 22" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-            </svg>
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-card border border-border mb-4 shadow-lg shadow-primary/20 overflow-hidden">
+            <Image src="/logo.png" alt="Run4Health" width={56} height={56} className="object-contain" priority />
           </div>
           <h1 className="text-3xl font-black text-foreground tracking-tight">Run4Health</h1>
           <p className="text-muted-foreground mt-1 text-sm">Member Portal</p>
