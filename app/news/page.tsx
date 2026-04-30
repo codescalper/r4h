@@ -1,12 +1,19 @@
 import type { Metadata } from "next"
-import Navbar from "@/components/landing-page/navbar"
-import Footer from "@/components/landing-page/footer"
+import PageWrapper from "@/components/landing-page/page-wrapper"
 import NewsPage from "@/components/landing-page/news-page"
 
 export const metadata: Metadata = {
   title: "News & Stories",
   description:
     "Stay updated with the latest Run4Health news — event recaps, community stories, marathon results, health tips and fitness inspiration from Thane's running community.",
+  keywords: [
+    "Run4Health news",
+    "running community blog Thane",
+    "marathon event recap",
+    "health tips running",
+    "community fitness stories",
+    "Thane marathon results",
+  ],
   alternates: { canonical: "https://run4health.in/news" },
   openGraph: {
     title: "Run4Health News — Events, Stories & Health Tips",
@@ -23,10 +30,8 @@ export const metadata: Metadata = {
 
 export default function News() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
+    <PageWrapper>
       <NewsPage />
-      <Footer />
-    </div>
+    </PageWrapper>
   )
 }

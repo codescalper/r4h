@@ -1,21 +1,14 @@
 "use client"
 
+import Link from "next/link"
 import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Bebas_Neue, Lora } from "next/font/google"
 import { Zap, TrendingUp, Users, Activity, Heart, ChevronRight } from "lucide-react"
+import { bebasNeue, lora } from "@/lib/fonts"
 
-const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
-const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
-
-type PageKey = "home" | "about" | "programs" | "news" | "register" | "donate" | "gallery" | "contact"
-
-// ─── PAGE 2: About ────────────────────────────────────────────────────────────
-function AboutPage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
+export default function AboutPage() {
   const timeline = [
     { year: "2015", title: "Run4Health Founded", desc: "Coach Shashi Nair launches Run4Health with a small group of 20 runners at Upvan Lake, Thane." },
     { year: "2017", title: "First Half Marathon", desc: "Organized Thane's first community-led half marathon with 500 participants." },
@@ -30,7 +23,7 @@ function AboutPage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void })
       <section className="relative py-20 overflow-hidden bg-muted/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-            <button onClick={() => setCurrentPage("home")} className="hover:text-primary">Home</button>
+            <Link href="/" className="hover:text-primary">Home</Link>
             <ChevronRight className="w-4 h-4" />
             <span className="text-foreground">About</span>
           </div>
@@ -126,4 +119,3 @@ function AboutPage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void })
   )
 }
 
-export default AboutPage

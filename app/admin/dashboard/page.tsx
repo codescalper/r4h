@@ -13,7 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Check, X, Trash2, Loader2, ImagePlus, Tag, Eye, LayoutDashboard, Users, Heart, ShieldCheck, FileText, Images, Dumbbell, LogOut, Mail, MessageSquare } from 'lucide-react';
+import { Check, X, Trash2, Loader2, ImagePlus, Tag, Eye, LayoutDashboard, Users, Heart, ShieldCheck, FileText, Images, Dumbbell, LogOut, Mail, MessageSquare, ChevronRight } from 'lucide-react';
 
 const TipTapEditor = dynamic(() => import('@/components/editor/tiptap-editor'), { ssr: false });
 const TipTapViewer = dynamic(() => import('@/components/editor/tiptap-viewer'), { ssr: false });
@@ -96,13 +96,13 @@ function StatusBadge({ status }: { status: string }) {
 
 function StatCard({ label, value, icon: Icon, accent }: { label: string; value: string | number; icon: React.ElementType; accent?: string }) {
   return (
-    <div className={`rounded-2xl border ${accent || 'border-zinc-200 dark:border-zinc-700'} bg-white dark:bg-zinc-900 p-6 flex items-center gap-4 shadow-sm`}>
-      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+    <div className={`rounded-2xl border bg-card p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow ${accent || 'border-border'}`}>
+      <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
         <Icon className="w-5 h-5 text-primary" />
       </div>
-      <div>
-        <p className="text-2xl font-black text-zinc-900 dark:text-white">{value}</p>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">{label}</p>
+      <div className="min-w-0">
+        <p className="text-2xl font-black text-foreground leading-none">{value}</p>
+        <p className="text-xs text-muted-foreground mt-1.5 font-medium truncate">{label}</p>
       </div>
     </div>
   );
@@ -111,6 +111,7 @@ function StatCard({ label, value, icon: Icon, accent }: { label: string; value: 
 // ─── Members Tab ──────────────────────────────────────────────────────────────
 
 function MembersTab({ onAction }: { onAction: () => void }) {
+  const router = useRouter();
   const [members, setMembers] = useState<Member[]>([]);
   const [filter, setFilter] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED'>('ALL');
   const [loading, setLoading] = useState(true);
@@ -185,44 +186,50 @@ function MembersTab({ onAction }: { onAction: () => void }) {
       ) : members.length === 0 ? (
         <div className="text-center py-12 text-zinc-400">No members found.</div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700">
+        <div className="overflow-x-auto rounded-xl border border-border shadow-sm">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-50 dark:bg-zinc-800">
+            <thead className="bg-muted/50">
               <tr>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Member</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300 hidden md:table-cell">Contact</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300 hidden lg:table-cell">City / Fitness</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Status</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300 hidden sm:table-cell">Joined</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Actions</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Member</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground hidden md:table-cell">Contact</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground hidden lg:table-cell">City / Fitness</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Status</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground hidden sm:table-cell">Joined</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-border">
               {members.map(m => (
                 <Fragment key={m.id}>
-                <tr className="bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                <tr className="bg-card hover:bg-muted/30 transition">
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => router.push(`/admin/dashboard/members/${m.id}`)}
+                      className="flex items-center gap-3 group text-left hover:opacity-80 transition-opacity"
+                    >
                       {m.profilePhotoPath ? (
                         <img src={m.profilePhotoPath} alt="" className="w-9 h-9 rounded-full object-cover" />
                       ) : (
-                        <div className="w-9 h-9 rounded-full bg-primary/10 dark:bg-primary/10 text-primary text-primary flex items-center justify-center font-bold text-sm">
+                        <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
                           {m.firstName[0]}{m.lastName[0]}
                         </div>
                       )}
                       <div>
-                        <p className="font-semibold text-zinc-900 dark:text-white">{m.firstName} {m.lastName}</p>
-                        <p className="text-xs text-zinc-400">{m.email}</p>
+                        <p className="font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
+                          {m.firstName} {m.lastName}
+                          <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </p>
+                        <p className="text-xs text-muted-foreground">{m.email}</p>
                       </div>
-                    </div>
+                    </button>
                   </td>
-                  <td className="px-4 py-3 hidden md:table-cell text-zinc-600 dark:text-zinc-400">{m.phone}</td>
+                  <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">{m.phone}</td>
                   <td className="px-4 py-3 hidden lg:table-cell">
-                    <span className="text-zinc-600 dark:text-zinc-400">{m.city}</span>
-                    <span className="ml-2 text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-500 px-2 py-0.5 rounded-full">{m.fitnessLevel}</span>
+                    <span className="text-muted-foreground">{m.city}</span>
+                    <span className="ml-2 text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">{m.fitnessLevel}</span>
                   </td>
                   <td className="px-4 py-3"><StatusBadge status={m.status} /></td>
-                  <td className="px-4 py-3 hidden sm:table-cell text-zinc-400 text-xs">{new Date(m.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 hidden sm:table-cell text-muted-foreground text-xs">{new Date(m.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       {m.status === 'PENDING' && (
@@ -322,34 +329,34 @@ function DonationsTab() {
   return (
     <div>
       {loading ? (
-        <div className="text-center py-12 text-zinc-400">Loading donations…</div>
+        <div className="text-center py-12 text-muted-foreground">Loading donations…</div>
       ) : donations.length === 0 ? (
-        <div className="text-center py-12 text-zinc-400">No donations yet.</div>
+        <div className="text-center py-12 text-muted-foreground">No donations yet.</div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700">
+        <div className="overflow-x-auto rounded-xl border border-border shadow-sm">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-50 dark:bg-zinc-800">
+            <thead className="bg-muted/50">
               <tr>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Donor</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Amount</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300 hidden sm:table-cell">Method</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Status</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300 hidden md:table-cell">Date</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Donor</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Amount</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground hidden sm:table-cell">Method</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Status</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground hidden md:table-cell">Date</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-border">
               {donations.map(d => (
-                <tr key={d.id} className="bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                <tr key={d.id} className="bg-card hover:bg-muted/30 transition">
                   <td className="px-4 py-3">
-                    <p className="font-semibold text-zinc-900 dark:text-white">{d.donorName}</p>
-                    <p className="text-xs text-zinc-400">{d.donorEmail}</p>
+                    <p className="font-semibold text-foreground">{d.donorName}</p>
+                    <p className="text-xs text-muted-foreground">{d.donorEmail}</p>
                   </td>
                   <td className="px-4 py-3 font-bold text-primary">
                     ₹{d.amount.toLocaleString()}
                   </td>
-                  <td className="px-4 py-3 hidden sm:table-cell text-zinc-500">{d.paymentMethod}</td>
+                  <td className="px-4 py-3 hidden sm:table-cell text-muted-foreground">{d.paymentMethod}</td>
                   <td className="px-4 py-3"><StatusBadge status={d.status} /></td>
-                  <td className="px-4 py-3 hidden md:table-cell text-zinc-400 text-xs">{new Date(d.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 hidden md:table-cell text-muted-foreground text-xs">{new Date(d.createdAt).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>
@@ -419,39 +426,39 @@ function AdminsTab() {
   return (
     <div className="space-y-8">
       {/* Create Admin Form */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 p-6">
-        <h2 className="text-base font-bold text-zinc-900 dark:text-white mb-1">Add New Admin</h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">Create a new admin account or promote an approved member by entering their email.</p>
+      <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+        <h2 className="text-base font-bold text-foreground mb-1">Add New Admin</h2>
+        <p className="text-sm text-muted-foreground mb-4">Create a new admin account or promote an approved member by entering their email.</p>
         {msg && (
-          <div className={`mb-4 px-4 py-2.5 rounded-lg text-sm font-medium flex items-start justify-between gap-3 ${msg.ok ? 'bg-primary/10 text-primary' : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400'}`}>
+          <div className={`mb-4 px-4 py-2.5 rounded-lg text-sm font-medium flex items-start justify-between gap-3 ${msg.ok ? 'bg-primary/10 text-primary' : 'bg-destructive/10 text-destructive'}`}>
             <span>{msg.text}</span>
             <button onClick={() => setMsg(null)} className="text-xs underline opacity-70 hover:opacity-100 flex-shrink-0">Dismiss</button>
           </div>
         )}
         <form onSubmit={handleCreate} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-zinc-500 mb-1">Full Name</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-1">Full Name</label>
             <input
               value={form.name}
               onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
               placeholder="John Doe"
               required
-              className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="w-full px-3 py-2 rounded-lg border border-input bg-muted/50 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-zinc-500 mb-1">Email Address</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-1">Email Address</label>
             <input
               type="email"
               value={form.email}
               onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
               placeholder="admin@example.com"
               required
-              className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="w-full px-3 py-2 rounded-lg border border-input bg-muted/50 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-xs font-semibold text-zinc-500 mb-1">Password <span className="font-normal">(min 8 characters)</span></label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-1">Password <span className="font-normal">(min 8 characters)</span></label>
             <input
               type="password"
               value={form.password}
@@ -459,14 +466,14 @@ function AdminsTab() {
               placeholder="Strong password"
               required
               minLength={8}
-              className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="w-full px-3 py-2 rounded-lg border border-input bg-muted/50 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
             />
           </div>
           <div className="sm:col-span-2">
             <button
               type="submit"
               disabled={formLoading}
-              className="px-5 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white text-sm font-semibold disabled:opacity-50 transition">
+              className="px-5 py-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold disabled:opacity-50 transition">
               {formLoading ? 'Creating…' : 'Create Admin'}
             </button>
           </div>
@@ -474,42 +481,42 @@ function AdminsTab() {
       </div>
 
       {/* Admins List */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 p-6">
-        <h2 className="text-base font-bold text-zinc-900 dark:text-white mb-4">All Admins</h2>
+      <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+        <h2 className="text-base font-bold text-foreground mb-4">All Admins</h2>
         {loading ? (
-          <div className="text-center py-8 text-zinc-400">Loading…</div>
+          <div className="text-center py-8 text-muted-foreground">Loading…</div>
         ) : admins.length === 0 ? (
-          <div className="text-center py-8 text-zinc-400">No admins found.</div>
+          <div className="text-center py-8 text-muted-foreground">No admins found.</div>
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700">
+          <div className="overflow-x-auto rounded-xl border border-border">
             <table className="w-full text-sm">
-              <thead className="bg-zinc-50 dark:bg-zinc-800">
+              <thead className="bg-muted/50">
                 <tr>
-                  <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Admin</th>
-                  <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300 hidden sm:table-cell">Created</th>
-                  <th className="text-left px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Actions</th>
+                  <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Admin</th>
+                  <th className="text-left px-4 py-3 font-semibold text-muted-foreground hidden sm:table-cell">Created</th>
+                  <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tbody className="divide-y divide-border">
                 {admins.map(a => (
-                  <tr key={a.id} className="bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                  <tr key={a.id} className="bg-card hover:bg-muted/30 transition">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm flex-shrink-0">
                           {a.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="font-semibold text-zinc-900 dark:text-white">{a.name}</p>
-                          <p className="text-xs text-zinc-400">{a.email}</p>
+                          <p className="font-semibold text-foreground">{a.name}</p>
+                          <p className="text-xs text-muted-foreground">{a.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 hidden sm:table-cell text-zinc-400 text-xs">{new Date(a.createdAt).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 hidden sm:table-cell text-muted-foreground text-xs">{new Date(a.createdAt).toLocaleDateString()}</td>
                     <td className="px-4 py-3">
                       <button
                         onClick={() => handleDelete(a.id)}
                         disabled={deleteLoading === a.id}
-                        className="px-3 py-1 rounded-lg bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 text-xs font-semibold disabled:opacity-50 transition">
+                        className="px-3 py-1 rounded-lg bg-destructive/10 hover:bg-destructive/20 text-destructive text-xs font-semibold disabled:opacity-50 transition">
                         {deleteLoading === a.id ? '…' : 'Remove'}
                       </button>
                     </td>
@@ -527,21 +534,31 @@ function AdminsTab() {
 // ─── Dashboard Overview ───────────────────────────────────────────────────────
 
 function DashboardOverview({ stats }: { stats: Stats | null }) {
-  if (!stats) return <div className="text-center py-12 text-zinc-400">Loading stats…</div>;
+  if (!stats) return <div className="text-center py-12 text-muted-foreground">Loading stats…</div>;
   return (
-    <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <StatCard label="Total Members" value={stats.totalMembers} icon={Users} />
         <StatCard label="Pending Review" value={stats.pendingMembers} icon={Loader2} accent="border-yellow-200 dark:border-yellow-800" />
-        <StatCard label="Approved Members" value={stats.approvedMembers} icon={Check} accent="border-primary/20 dark:border-primary/30" />
-        <StatCard label="Total Donations" value={`₹${stats.totalDonationsAmount.toLocaleString()}`} icon={Heart} accent="border-emerald-200 dark:border-emerald-800" />
+        <StatCard label="Approved Members" value={stats.approvedMembers} icon={Check} accent="border-primary/20" />
+        <StatCard label="Total Donations" value={`₹${stats.totalDonationsAmount.toLocaleString()}`} icon={Heart} accent="border-primary/20" />
       </div>
-      <div className="bg-primary/5 dark:bg-primary/10 border border-primary/20 dark:border-primary/30 rounded-2xl p-6">
-        <h3 className="font-bold text-zinc-900 dark:text-white mb-1">Welcome, Admin</h3>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          You have <strong>{stats.pendingMembers}</strong> pending application{stats.pendingMembers !== 1 ? 's' : ''} waiting for review.
-          {stats.pendingMembers > 0 ? ' Head over to the Members tab to take action.' : ' All caught up!'}
-        </p>
+      <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/5 p-6">
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 90% 50%, var(--color-primary) 0%, transparent 60%)' }} />
+        <div className="relative z-10">
+          <h3 className="font-black text-foreground text-lg">Good to see you, Admin 👋</h3>
+          <p className="text-sm text-muted-foreground mt-1 max-w-lg">
+            {stats.pendingMembers > 0
+              ? `You have ${stats.pendingMembers} pending application${stats.pendingMembers !== 1 ? 's' : ''} waiting for review. Head over to the Members tab to take action.`
+              : 'All caught up! No pending member applications at this time.'}
+          </p>
+          {stats.pendingMembers > 0 && (
+            <div className="mt-3 inline-flex items-center gap-2 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 px-3 py-1.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
+              <span className="text-xs font-semibold text-yellow-700 dark:text-yellow-400">{stats.pendingMembers} awaiting action</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -1148,36 +1165,45 @@ export default function AdminDashboardPage() {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-zinc-50 dark:bg-zinc-950">
+      <div className="flex min-h-screen w-full bg-background">
         {/* ─── Sidebar ─── */}
-        <Sidebar collapsible="offcanvas" className="border-r border-zinc-200 dark:border-zinc-800">
-          <SidebarHeader className="p-4">
-            <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="Run4Health" className="w-9 h-9 rounded-xl object-contain bg-white p-0.5" />
-              <div>
-                <p className="font-black text-zinc-900 dark:text-white text-sm leading-tight">Run4Health</p>
-                <p className="text-xs text-zinc-400">Admin Panel</p>
+        <Sidebar collapsible="offcanvas" className="border-r border-border bg-sidebar">
+          {/* Brand Header */}
+          <SidebarHeader className="p-0">
+            <div className="relative overflow-hidden px-5 py-4 border-b border-border">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent" />
+              <div className="relative z-10 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-sm flex-shrink-0">
+                  <img src="/logo.png" alt="" className="w-5 h-5 object-contain" />
+                </div>
+                <div>
+                  <p className="font-black text-foreground text-sm leading-none tracking-tight">Run4Health</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 font-medium">Admin Panel</p>
+                </div>
               </div>
             </div>
           </SidebarHeader>
 
-          <SidebarSeparator />
-
-          <SidebarContent className="px-2 py-3">
-            <SidebarMenu>
+          <SidebarContent className="px-3 py-4">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-3 mb-2">Navigation</p>
+            <SidebarMenu className="gap-0.5">
               {navItems.map(item => (
                 <SidebarMenuItem key={item.tab}>
                   <SidebarMenuButton
                     isActive={activeTab === item.tab}
                     onClick={() => setActiveTab(item.tab)}
-                    className="w-full flex items-center justify-between"
+                    className={`w-full rounded-xl px-3 py-2.5 flex items-center justify-between transition-all ${
+                      activeTab === item.tab
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
+                    }`}
                   >
                     <span className="flex items-center gap-3">
-                      <item.icon className="w-4 h-4" />
-                      <span className="font-medium">{item.label}</span>
+                      <item.icon className={`w-4 h-4 flex-shrink-0 ${activeTab === item.tab ? 'text-primary' : ''}`} />
+                      <span className={`text-sm ${activeTab === item.tab ? 'font-semibold' : 'font-medium'}`}>{item.label}</span>
                     </span>
                     {item.badge != null && item.badge > 0 && (
-                      <span className="ml-auto bg-yellow-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">
+                      <span className="ml-auto bg-primary text-primary-foreground text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">
                         {item.badge > 9 ? '9+' : item.badge}
                       </span>
                     )}
@@ -1187,13 +1213,13 @@ export default function AdminDashboardPage() {
             </SidebarMenu>
           </SidebarContent>
 
-          <SidebarFooter className="p-4">
+          <SidebarFooter className="p-3 border-t border-border">
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition"
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-all"
             >
               <LogOut className="w-4 h-4" />
-              <span>Logout</span>
+              <span>Sign Out</span>
             </button>
           </SidebarFooter>
         </Sidebar>
@@ -1201,14 +1227,16 @@ export default function AdminDashboardPage() {
         {/* ─── Main Content ─── */}
         <SidebarInset className="flex flex-col flex-1 min-w-0">
           {/* Top bar */}
-          <header className="flex items-center gap-4 px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 sticky top-0 z-10">
+          <header className="flex items-center gap-3 px-6 py-3.5 border-b border-border bg-card sticky top-0 z-10">
             <SidebarTrigger className="flex-shrink-0" />
-            <div>
-              <h1 className="text-lg font-bold text-zinc-900 dark:text-white">{tabTitles[activeTab]}</h1>
+            <div className="h-5 w-px bg-border mx-1" />
+            <div className="flex-1 min-w-0">
+              <h1 className="text-sm font-bold text-foreground leading-none">{tabTitles[activeTab]}</h1>
+              <p className="text-xs text-muted-foreground mt-0.5">Run4Health Admin</p>
             </div>
           </header>
 
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-6 bg-background">
             {activeTab === 'dashboard' && <DashboardOverview stats={stats} />}
             {activeTab === 'members' && <MembersTab onAction={fetchStats} />}
             {activeTab === 'donations' && <DonationsTab />}

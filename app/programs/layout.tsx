@@ -4,6 +4,16 @@ export const metadata: Metadata = {
   title: "Programs & Events",
   description:
     "Explore Run4Health programs — marathon training, yoga sessions, health awareness camps, corporate wellness and fun runs across Thane and Mumbai. Register for upcoming events.",
+  keywords: [
+    "Run4Health programs",
+    "marathon training Thane",
+    "yoga sessions Thane",
+    "health awareness camp Mumbai",
+    "corporate wellness Thane",
+    "fun run Thane",
+    "half marathon training",
+    "running events Mumbai",
+  ],
   alternates: { canonical: "https://run4health.in/programs" },
   openGraph: {
     title: "Run4Health Programs — Marathon, Yoga & Wellness Events",

@@ -3,8 +3,13 @@ import prisma from '@/lib/prisma';
 import { generateSecureToken, tokenExpiresAt } from '@/lib/auth';
 import { sendEmail } from '@/lib/email';
 import { BASE_URL, EMAIL } from '@/lib/constants';
+import { rateLimit, getClientIp, rateLimitExceeded } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request);
+  const rl = rateLimit(`member-forgot:${ip}`, { limit: 3, windowMs: 60 * 60 * 1000 });
+  if (!rl.success) return rateLimitExceeded(rl.resetAt);
+
   try {
     const { email } = await request.json();
 

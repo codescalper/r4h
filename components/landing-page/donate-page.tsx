@@ -7,17 +7,14 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Bebas_Neue, Lora } from "next/font/google"
 import { Heart, Shield, CheckCircle, TrendingUp, DollarSign } from "lucide-react"
+import { bebasNeue, lora } from "@/lib/fonts"
+import { usePageNavigation } from "@/hooks/use-page-navigation"
 import useCountUp from "./use-count-up"
 
-const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
-const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
-
-type PageKey = "home" | "about" | "programs" | "news" | "register" | "donate" | "gallery" | "contact"
-
-// ─── PAGE 7: Donations ────────────────────────────────────────────────────────
-function DonatePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
+// ─── Donations page ───────────────────────────────────────────────────────────
+export default function DonatePage() {
+  const navigate = usePageNavigation()
   const [amountPreset, setAmountPreset] = useState("")
   const [custom, setCustom] = useState(false)
   const [customAmount, setCustomAmount] = useState("")
@@ -68,7 +65,7 @@ function DonatePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }
         <p className={`${lora.className} text-sm text-muted-foreground mb-6`}>
           A confirmation has been sent to <strong>{donorEmail}</strong>.
         </p>
-        <Button onClick={() => setCurrentPage("home")} className="gap-1">Back to Home <DollarSign className="w-4 h-4" /></Button>
+        <Button onClick={() => navigate("home")} className="gap-1">Back to Home <DollarSign className="w-4 h-4" /></Button>
       </motion.div>
     </div>
   )
@@ -193,5 +190,3 @@ function DonatePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }
     </div>
   )
 }
-
-export default DonatePage

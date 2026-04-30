@@ -4,6 +4,7 @@ import path from 'path';
 import prisma from '@/lib/prisma';
 import { sendEmail } from '@/lib/email';
 import { EMAIL } from '@/lib/constants';
+import { rateLimit, getClientIp, rateLimitExceeded } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
@@ -28,6 +29,10 @@ function str(fd: FormData, key: string): string {
 }
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request);
+  const rl = rateLimit(`register:${ip}`, { limit: 3, windowMs: 60 * 60 * 1000 });
+  if (!rl.success) return rateLimitExceeded(rl.resetAt);
+
   try {
     const fd = await request.formData();
 

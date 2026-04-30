@@ -1,41 +1,38 @@
-'use client'
+import type { Metadata } from "next"
+import MinimalHeader from "@/components/landing-page/minimal-header"
+import RegisterPage from "@/components/landing-page/register-page"
 
-import { useRouter } from 'next/navigation'
-import RegisterPage from '@/components/landing-page/register-page'
-
-type PageKey = "home" | "about" | "programs" | "news" | "register" | "donate" | "gallery" | "contact"
+export const metadata: Metadata = {
+  title: "Join Run4Health — Become a Member",
+  description:
+    "Join Thane's largest fitness community. Register for Run4Health membership and get access to marathon training, yoga sessions, health camps and community runs.",
+  keywords: [
+    "join Run4Health",
+    "running club membership Thane",
+    "fitness community registration",
+    "marathon training membership",
+    "running group Mumbai",
+  ],
+  alternates: { canonical: "https://run4health.in/join" },
+  openGraph: {
+    title: "Join Run4Health — Become a Member",
+    description:
+      "Join 2400+ runners and fitness enthusiasts. Register for Run4Health membership in Thane and get access to all programs and events.",
+    url: "https://run4health.in/join",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Join Run4Health" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Join Run4Health — Become a Member",
+    description: "Join 2400+ runners. Register for Run4Health membership in Thane.",
+  },
+}
 
 export default function JoinPage() {
-  const router = useRouter()
-
-  const setCurrentPage = (page: PageKey) => {
-    const routes: Partial<Record<PageKey, string>> = {
-      home: '/',
-      donate: '/donate',
-      about: '/',
-      programs: '/',
-      news: '/',
-      gallery: '/',
-      contact: '/',
-    }
-    router.push(routes[page] ?? '/')
-  }
-
   return (
     <div className="min-h-screen bg-background">
-      {/* Minimal top bar */}
-      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center gap-3">
-        <a href="/" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Home
-        </a>
-        <span className="text-border">|</span>
-        <span className="text-sm font-semibold text-foreground">Join Run4Health</span>
-      </div>
-
-      <RegisterPage setCurrentPage={setCurrentPage} />
+      <MinimalHeader title="Join Run4Health" />
+      <RegisterPage />
     </div>
   )
 }

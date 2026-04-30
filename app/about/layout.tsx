@@ -4,6 +4,14 @@ export const metadata: Metadata = {
   title: "About Us",
   description:
     "Learn about Run4Health — founded in 2015 in Thane, now 2400+ members strong. Discover our mission, milestones and the community driving healthier lives across Thane and Mumbai.",
+  keywords: [
+    "about Run4Health",
+    "running club history Thane",
+    "fitness community founded 2015",
+    "Run4Health mission",
+    "Upvan Lake running group",
+    "Thane fitness community story",
+  ],
   alternates: { canonical: "https://run4health.in/about" },
   openGraph: {
     title: "About Run4Health — Our Story & Mission",

@@ -8,13 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Bebas_Neue, Lora } from "next/font/google"
 import { CheckCircle, ArrowRight, ArrowLeft, Camera, Upload } from "lucide-react"
-
-const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
-const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
-
-type PageKey = "home" | "about" | "programs" | "news" | "register" | "donate" | "gallery" | "contact"
+import { bebasNeue, lora } from "@/lib/fonts"
+import { usePageNavigation } from "@/hooks/use-page-navigation"
 
 interface RegFormData {
   firstName: string; lastName: string; age: string; gender: string;
@@ -24,7 +20,8 @@ interface RegFormData {
   confirmed: boolean; agreed: boolean;
 }
 
-function RegisterPage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
+export default function RegisterPage() {
+  const navigate = usePageNavigation()
   const [step, setStep] = useState(1)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitted, setSubmitted] = useState(false)
@@ -114,7 +111,7 @@ function RegisterPage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void
         <p className={`${lora.className} text-sm text-muted-foreground mb-6`}>
           A confirmation has been sent to <strong>{form.email}</strong>. Once approved, you'll receive a link to set your password and access your member dashboard.
         </p>
-        <Button onClick={() => setCurrentPage("home")} className="gap-1">Back to Home <ArrowRight className="w-4 h-4" /></Button>
+        <Button onClick={() => navigate("home")} className="gap-1">Back to Home <ArrowRight className="w-4 h-4" /></Button>
       </motion.div>
     </div>
   )
@@ -306,5 +303,3 @@ function RegisterPage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void
     </div>
   )
 }
-
-export default RegisterPage

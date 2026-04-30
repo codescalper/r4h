@@ -1,8 +1,44 @@
 import type { MetadataRoute } from "next"
+import prisma from "@/lib/prisma"
+
+export const revalidate = 3600
 
 const BASE_URL = "https://run4health.in"
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  let postUrls: MetadataRoute.Sitemap = []
+  let programUrls: MetadataRoute.Sitemap = []
+
+  try {
+    const [posts, programs] = await Promise.all([
+      prisma.post.findMany({
+        where: { status: "APPROVED" },
+        select: { slug: true, updatedAt: true },
+        orderBy: { updatedAt: "desc" },
+      }),
+      prisma.program.findMany({
+        select: { slug: true, id: true, updatedAt: true },
+        orderBy: { updatedAt: "desc" },
+      }),
+    ])
+
+    postUrls = posts.map((p) => ({
+      url: `${BASE_URL}/news/${p.slug}`,
+      lastModified: p.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }))
+
+    programUrls = programs.map((p) => ({
+      url: `${BASE_URL}/programs/${p.slug ?? p.id}`,
+      lastModified: p.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.75,
+    }))
+  } catch {
+    // DB unavailable — return static pages only
+  }
+
   return [
     {
       url: BASE_URL,
@@ -52,5 +88,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.85,
     },
+    ...programUrls,
+    ...postUrls,
   ]
 }

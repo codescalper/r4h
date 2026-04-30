@@ -1,31 +1,14 @@
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
-import { Bebas_Neue, Lora } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-
-const bebasNeue = Bebas_Neue({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--bebas",
-});
-
-const lora = Lora({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--lora",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { bebasNeue, lora, geistMono } from "@/lib/fonts";
 
 const BASE_URL = "https://run4health.in";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
+  applicationName: "Run4Health",
   title: {
     default: "Run4Health — Fitness Community in Thane & Mumbai",
     template: "%s | Run4Health",
@@ -40,6 +23,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Run4Health", url: BASE_URL }],
   creator: "Run4Health",
   publisher: "Run4Health",
+  formatDetection: { telephone: false },
   robots: {
     index: true,
     follow: true,

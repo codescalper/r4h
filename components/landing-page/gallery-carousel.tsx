@@ -1,17 +1,23 @@
-"use client"
+﻿"use client"
 
 import { useState, useEffect } from "react"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"
-import { Lora } from "next/font/google"
 import { Camera } from "lucide-react"
+import { lora } from "@/lib/fonts"
+import { usePageNavigation } from "@/hooks/use-page-navigation"
 
-const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
+const ITEMS = [
+  { g: "from-primary/30 to-primary/10", label: "Marathon 2025" },
+  { g: "from-accent/30 to-accent/10", label: "Yoga Sessions" },
+  { g: "from-primary/20 to-accent/20", label: "Health Camp" },
+  { g: "from-accent/20 to-primary/10", label: "Diwali Fun Run" },
+  { g: "from-primary/25 to-primary/5", label: "Team Training" },
+  { g: "from-accent/25 to-primary/15", label: "Community Day" },
+]
 
-type PageKey = "home" | "about" | "programs" | "news" | "register" | "donate" | "gallery" | "contact"
-
-// ─── Gallery Carousel (autoplay) ─────────────────────────────────────────────
-function GalleryCarousel({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
+export default function GalleryCarousel() {
   const [api, setApi] = useState<CarouselApi>()
+  const navigate = usePageNavigation()
 
   useEffect(() => {
     if (!api) return
@@ -19,23 +25,14 @@ function GalleryCarousel({ setCurrentPage }: { setCurrentPage: (p: PageKey) => v
     return () => clearInterval(timer)
   }, [api])
 
-  const items = [
-    { g: "from-primary/30 to-primary/10", label: "Marathon 2025" },
-    { g: "from-accent/30 to-accent/10", label: "Yoga Sessions" },
-    { g: "from-primary/20 to-accent/20", label: "Health Camp" },
-    { g: "from-accent/20 to-primary/10", label: "Diwali Fun Run" },
-    { g: "from-primary/25 to-primary/5", label: "Team Training" },
-    { g: "from-accent/25 to-primary/15", label: "Community Day" },
-  ]
-
   return (
     <Carousel opts={{ align: "start", loop: true }} setApi={setApi} className="w-full">
       <CarouselContent className="-ml-3">
-        {items.map((item, i) => (
+        {ITEMS.map((item, i) => (
           <CarouselItem key={i} className="pl-3 basis-1/2 sm:basis-1/3 lg:basis-1/4">
             <div
               className={`relative h-44 sm:h-52 rounded-xl bg-gradient-to-br ${item.g} flex flex-col items-center justify-center group cursor-pointer overflow-hidden`}
-              onClick={() => setCurrentPage("gallery")}
+              onClick={() => navigate("gallery")}
             >
               <Camera className="w-8 h-8 text-primary/40" />
               <span className={`${lora.className} text-xs text-primary/60 mt-2`}>{item.label}</span>
@@ -53,5 +50,3 @@ function GalleryCarousel({ setCurrentPage }: { setCurrentPage: (p: PageKey) => v
     </Carousel>
   )
 }
-
-export default GalleryCarousel

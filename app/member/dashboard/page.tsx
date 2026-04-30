@@ -96,36 +96,42 @@ function ProfileTab({ member, onUpdate }: { member: Member; onUpdate: () => void
   }
 
   const Field = ({ label, value }: { label: string; value: string | null | undefined }) => (
-    <div className="py-3 border-b border-zinc-100 dark:border-zinc-800 last:border-0">
-      <p className="text-xs text-zinc-400 mb-0.5">{label}</p>
-      <p className="text-sm font-medium text-zinc-900 dark:text-white">{value || '—'}</p>
+    <div className="py-3 border-b border-border last:border-0">
+      <p className="text-xs text-muted-foreground mb-0.5">{label}</p>
+      <p className="text-sm font-medium text-foreground">{value || '—'}</p>
     </div>
   );
 
   return (
     <div className="space-y-6">
-      {/* Avatar + name */}
-      <div className="flex items-center gap-5 p-5 bg-primary/5 dark:bg-primary/10 border border-primary/20 dark:border-primary/30 rounded-2xl">
-        {member.profilePhotoPath ? (
-          <img src={member.profilePhotoPath} alt="" className="w-20 h-20 rounded-2xl object-cover border-2 border-green-300" />
-        ) : (
-          <div className="w-20 h-20 rounded-2xl bg-primary text-white flex items-center justify-center text-2xl font-black">
-            {member.firstName[0]}{member.lastName[0]}
+      {/* Hero card */}
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+        <div className="h-16 bg-gradient-to-r from-primary/20 via-primary/10 to-accent/20" />
+        <div className="px-5 pb-5 -mt-8 flex items-end gap-4">
+          {member.profilePhotoPath ? (
+            <img src={member.profilePhotoPath} alt="" className="w-16 h-16 rounded-2xl object-cover border-4 border-card shadow-sm flex-shrink-0" />
+          ) : (
+            <div className="w-16 h-16 rounded-2xl bg-primary border-4 border-card shadow-sm flex items-center justify-center text-primary-foreground text-xl font-black flex-shrink-0">
+              {member.firstName[0]}{member.lastName[0]}
+            </div>
+          )}
+          <div className="pb-1 min-w-0">
+            <h2 className="text-lg font-black text-foreground leading-tight">{member.firstName} {member.lastName}</h2>
+            <p className="text-xs text-muted-foreground">{member.email}</p>
           </div>
-        )}
-        <div>
-          <h2 className="text-xl font-black text-zinc-900 dark:text-white">{member.firstName} {member.lastName}</h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">{member.email}</p>
-          <span className="mt-1.5 inline-block bg-primary/10 dark:bg-primary/10 text-primary text-primary text-xs font-semibold px-2.5 py-0.5 rounded-full">
-            ✅ {member.status}
-          </span>
+          <div className="ml-auto pb-1 flex-shrink-0">
+            <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full border border-primary/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              {member.status}
+            </span>
+          </div>
         </div>
       </div>
 
       {/* Info grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 p-4">
-          <h3 className="font-bold text-zinc-900 dark:text-white mb-3 text-sm">Personal Details</h3>
+        <div className="bg-card rounded-2xl border border-border p-4 shadow-sm">
+          <h3 className="font-bold text-foreground mb-3 text-sm">Personal Details</h3>
           <Field label="Age" value={member.age?.toString()} />
           <Field label="Gender" value={member.gender} />
           <Field label="City" value={city} />
@@ -133,8 +139,8 @@ function ProfileTab({ member, onUpdate }: { member: Member; onUpdate: () => void
           <Field label="Member Since" value={new Date(member.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })} />
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 p-4">
-          <h3 className="font-bold text-zinc-900 dark:text-white mb-3 text-sm">Health Data</h3>
+        <div className="bg-card rounded-2xl border border-border p-4 shadow-sm">
+          <h3 className="font-bold text-foreground mb-3 text-sm">Health Data</h3>
           <Field label="Height" value={member.height ? `${member.height} cm` : null} />
           <Field label="Weight" value={member.weight ? `${member.weight} kg` : null} />
           <Field label="Waist" value={member.waistSize ? `${member.waistSize} cm` : null} />
@@ -147,8 +153,8 @@ function ProfileTab({ member, onUpdate }: { member: Member; onUpdate: () => void
       {msg && <div className="px-4 py-3 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/20 dark:border-primary/30 text-primary text-primary text-sm">{msg}</div>}
 
       {editing ? (
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 p-5 space-y-4">
-          <h3 className="font-bold text-zinc-900 dark:text-white text-sm">Edit Information</h3>
+        <div className="bg-card rounded-2xl border border-border p-5 space-y-4 shadow-sm">
+          <h3 className="font-bold text-foreground text-sm">Edit Information</h3>
           {[{ label: 'Phone', value: phone, set: setPhone }, { label: 'City', value: city, set: setCity }, { label: 'Emergency Contact', value: emergency, set: setEmergency }].map(f => (
             <div key={f.label}>
               <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">{f.label}</label>
@@ -217,16 +223,16 @@ function HealthTab() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="font-bold text-zinc-900 dark:text-white">Health Records</h2>
+        <h2 className="font-bold text-foreground">Health Records</h2>
         <button onClick={() => setShowForm(v => !v)}
-          className="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition">
+          className="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition">
           {showForm ? 'Cancel' : '+ Add Record'}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleAdd} className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 p-5 space-y-4">
-          <h3 className="font-bold text-sm text-zinc-900 dark:text-white">New Health Entry</h3>
+        <form onSubmit={handleAdd} className="bg-card rounded-2xl border border-border p-5 space-y-4 shadow-sm">
+          <h3 className="font-bold text-sm text-foreground">New Health Entry</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {[{ key: 'weight', label: 'Weight (kg)' }, { key: 'height', label: 'Height (cm)' }, { key: 'waistSize', label: 'Waist (cm)' }, { key: 'thighSize', label: 'Thigh (cm)' }, { key: 'sleepHours', label: 'Sleep (hrs)' }].map(f => (
               <div key={f.key}>
@@ -255,22 +261,22 @@ function HealthTab() {
       ) : records.length === 0 ? (
         <div className="text-center py-12 text-zinc-400">No health records yet. Add your first one!</div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700">
+        <div className="overflow-x-auto rounded-xl border border-border shadow-sm">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-50 dark:bg-zinc-800">
+            <thead className="bg-muted/50">
               <tr>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-600 dark:text-zinc-300 text-xs">Date</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-600 dark:text-zinc-300 text-xs">Weight</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-600 dark:text-zinc-300 text-xs hidden sm:table-cell">Height</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-600 dark:text-zinc-300 text-xs hidden md:table-cell">Waist</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-600 dark:text-zinc-300 text-xs hidden md:table-cell">Thigh</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-600 dark:text-zinc-300 text-xs hidden lg:table-cell">Sleep</th>
-                <th className="text-left px-4 py-3 font-semibold text-zinc-600 dark:text-zinc-300 text-xs">Notes</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground text-xs">Date</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground text-xs">Weight</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground text-xs hidden sm:table-cell">Height</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground text-xs hidden md:table-cell">Waist</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground text-xs hidden md:table-cell">Thigh</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground text-xs hidden lg:table-cell">Sleep</th>
+                <th className="text-left px-4 py-3 font-semibold text-muted-foreground text-xs">Notes</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-border">
               {records.map(r => (
-                <tr key={r.id} className="bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                <tr key={r.id} className="bg-card hover:bg-muted/30 transition">
                   <td className="px-4 py-3 text-zinc-500 dark:text-zinc-400 whitespace-nowrap">{new Date(r.recordedAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3 font-semibold text-zinc-900 dark:text-white">{r.weight ? `${r.weight}kg` : '—'}</td>
                   <td className="px-4 py-3 text-zinc-500 hidden sm:table-cell">{r.height ? `${r.height}cm` : '—'}</td>
@@ -323,9 +329,9 @@ function DonationsTab({ member }: { member: Member }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="font-bold text-zinc-900 dark:text-white">My Donations</h2>
+        <h2 className="font-bold text-foreground">My Donations</h2>
         <button onClick={() => setShowForm(v => !v)}
-          className="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition">
+          className="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition">
           {showForm ? 'Cancel' : '💚 Donate'}
         </button>
       </div>
@@ -333,8 +339,8 @@ function DonationsTab({ member }: { member: Member }) {
       {successMsg && <div className="px-4 py-3 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/20 dark:border-primary/30 text-primary text-primary text-sm">{successMsg}</div>}
 
       {showForm && (
-        <form onSubmit={handleDonate} className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 p-5 space-y-4">
-          <h3 className="font-bold text-sm text-zinc-900 dark:text-white">Make a Donation</h3>
+        <form onSubmit={handleDonate} className="bg-card rounded-2xl border border-border p-5 space-y-4 shadow-sm">
+          <h3 className="font-bold text-sm text-foreground">Make a Donation</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">Amount (₹) *</label>
@@ -371,7 +377,7 @@ function DonationsTab({ member }: { member: Member }) {
       ) : (
         <div className="space-y-3">
           {donations.map(d => (
-            <div key={d.id} className="flex items-center justify-between bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3">
+            <div key={d.id} className="flex items-center justify-between bg-card border border-border rounded-xl px-4 py-3 shadow-sm hover:shadow-md transition-shadow">
               <div>
                 <p className="font-bold text-primary text-lg">₹{d.amount.toLocaleString()}</p>
                 <p className="text-xs text-zinc-400">{d.paymentMethod} · {new Date(d.createdAt).toLocaleDateString()}</p>
@@ -679,10 +685,10 @@ export default function MemberDashboardPage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" />
-        <p className="text-zinc-400 text-sm">Loading your dashboard…</p>
+        <p className="text-muted-foreground text-sm">Loading your dashboard…</p>
       </div>
     </div>
   );
@@ -691,35 +697,50 @@ export default function MemberDashboardPage() {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-zinc-50 dark:bg-zinc-950">
+      <div className="flex min-h-screen w-full bg-background">
         {/* ─── Sidebar ─── */}
-        <Sidebar collapsible="offcanvas" className="border-r border-zinc-200 dark:border-zinc-800">
-          <SidebarHeader className="p-4">
-            <div className="flex items-center gap-3">
-              {member.profilePhotoPath ? (
-                <img src={member.profilePhotoPath} alt="" className="w-10 h-10 rounded-xl object-cover" />
-              ) : (
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-black text-sm flex-shrink-0">
-                  {member.firstName[0]}{member.lastName[0]}
+        <Sidebar collapsible="offcanvas" className="border-r border-border bg-sidebar">
+          {/* Member hero section */}
+          <SidebarHeader className="p-0">
+            <div className="relative overflow-hidden px-5 py-5 border-b border-border">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent" />
+              <div className="relative z-10 flex items-start gap-3">
+                {member.profilePhotoPath ? (
+                  <img src={member.profilePhotoPath} alt="" className="w-12 h-12 rounded-2xl object-cover border-2 border-primary/20 flex-shrink-0 shadow-sm" />
+                ) : (
+                  <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-black text-base flex-shrink-0 shadow-sm">
+                    {member.firstName[0]}{member.lastName[0]}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="font-black text-foreground text-sm leading-tight truncate">{member.firstName} {member.lastName}</p>
+                  <p className="text-xs text-muted-foreground truncate mt-0.5">{member.email}</p>
+                  <div className="mt-2 inline-flex items-center gap-1.5 bg-primary/10 px-2 py-0.5 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                    <span className="text-[11px] font-semibold text-primary">{member.fitnessLevel}</span>
+                  </div>
                 </div>
-              )}
-              <div className="overflow-hidden">
-                <p className="font-bold text-zinc-900 dark:text-white text-sm truncate">{member.firstName} {member.lastName}</p>
-                <p className="text-xs text-zinc-400 truncate">{member.email}</p>
               </div>
             </div>
           </SidebarHeader>
 
-          <SidebarSeparator />
-
-          <SidebarContent className="px-2 py-3">
-            <SidebarMenu>
+          <SidebarContent className="px-3 py-4">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-3 mb-2">Menu</p>
+            <SidebarMenu className="gap-0.5">
               {navItems.map(item => (
                 <SidebarMenuItem key={item.tab}>
-                  <SidebarMenuButton isActive={activeTab === item.tab} onClick={() => setActiveTab(item.tab)}>
+                  <SidebarMenuButton
+                    isActive={activeTab === item.tab}
+                    onClick={() => setActiveTab(item.tab)}
+                    className={`w-full rounded-xl px-3 py-2.5 transition-all ${
+                      activeTab === item.tab
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
+                    }`}
+                  >
                     <span className="flex items-center gap-3">
-                      <item.icon className="w-4 h-4" />
-                      <span className="font-medium">{item.label}</span>
+                      <item.icon className={`w-4 h-4 flex-shrink-0 ${activeTab === item.tab ? 'text-primary' : ''}`} />
+                      <span className={`text-sm ${activeTab === item.tab ? 'font-semibold' : 'font-medium'}`}>{item.label}</span>
                     </span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -727,31 +748,33 @@ export default function MemberDashboardPage() {
             </SidebarMenu>
           </SidebarContent>
 
-          <SidebarFooter className="p-4">
-            <div className="mb-3 px-3 py-2.5 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/20 dark:border-primary/30">
-              <p className="text-xs text-primary text-primary font-semibold">Run4Health Member</p>
-              <p className="text-xs text-primary mt-0.5">
+          <SidebarFooter className="p-3 border-t border-border">
+            <div className="px-3 py-2.5 rounded-xl bg-muted/50 mb-2">
+              <p className="text-xs font-semibold text-foreground">Run4Health Member</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Since {new Date(member.createdAt).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}
               </p>
             </div>
             <button onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-all">
               <LogOut className="w-4 h-4" />
-              <span>Logout</span>
+              <span>Sign Out</span>
             </button>
           </SidebarFooter>
         </Sidebar>
 
         {/* ─── Main Content ─── */}
         <SidebarInset className="flex flex-col flex-1 min-w-0">
-          <header className="flex items-center gap-4 px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 sticky top-0 z-10">
+          <header className="flex items-center gap-3 px-6 py-3.5 border-b border-border bg-card sticky top-0 z-10">
             <SidebarTrigger className="flex-shrink-0" />
-            <div>
-              <h1 className="text-lg font-bold text-zinc-900 dark:text-white">{tabTitles[activeTab]}</h1>
+            <div className="h-5 w-px bg-border mx-1" />
+            <div className="flex-1">
+              <h1 className="text-sm font-bold text-foreground leading-none">{tabTitles[activeTab]}</h1>
+              <p className="text-xs text-muted-foreground mt-0.5">Member Dashboard</p>
             </div>
           </header>
 
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-6 bg-background">
             {activeTab === 'profile' && <ProfileTab member={member} onUpdate={fetchProfile} />}
             {activeTab === 'health' && <HealthTab />}
             {activeTab === 'donations' && <DonationsTab member={member} />}

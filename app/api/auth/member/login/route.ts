@@ -1,8 +1,13 @@
 import { NextRequest } from 'next/server';
 import prisma from '@/lib/prisma';
 import { comparePassword, signToken, setMemberCookie } from '@/lib/auth';
+import { rateLimit, getClientIp, rateLimitExceeded } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request);
+  const rl = rateLimit(`member-login:${ip}`, { limit: 5, windowMs: 15 * 60 * 1000 });
+  if (!rl.success) return rateLimitExceeded(rl.resetAt);
+
   try {
     const { email, password } = await request.json();
 

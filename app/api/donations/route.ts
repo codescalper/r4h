@@ -1,8 +1,13 @@
 import { NextRequest } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getMemberFromCookie } from '@/lib/auth';
+import { rateLimit, getClientIp, rateLimitExceeded } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request);
+  const rl = rateLimit(`donations:${ip}`, { limit: 10, windowMs: 60 * 60 * 1000 });
+  if (!rl.success) return rateLimitExceeded(rl.resetAt);
+
   try {
     const body = await request.json();
     const { donorName, donorEmail, donorPhone, amount, paymentMethod, message } = body;

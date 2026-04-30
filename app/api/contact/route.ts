@@ -1,7 +1,12 @@
 import { NextRequest } from 'next/server';
 import prisma from '@/lib/prisma';
+import { rateLimit, getClientIp, rateLimitExceeded } from '@/lib/rate-limit';
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = rateLimit(`contact:${ip}`, { limit: 5, windowMs: 60 * 60 * 1000 });
+  if (!rl.success) return rateLimitExceeded(rl.resetAt);
+
   const { name, email, subject, message } = await req.json();
 
   if (!name?.trim() || !email?.trim() || !subject?.trim() || !message?.trim()) {
