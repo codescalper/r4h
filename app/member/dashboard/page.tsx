@@ -11,7 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle, Loader2, ImagePlus, X, Pencil, Trash2, FileText, User, Activity, Heart, LogOut } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { CheckCircle, Loader2, ImagePlus, X, Pencil, Trash2, FileText, User, Activity, Heart, LogOut, Settings } from 'lucide-react';
 
 const TipTapEditor = dynamic(() => import('@/components/editor/tiptap-editor'), { ssr: false });
 import {
@@ -396,7 +397,7 @@ function DonationsTab({ member }: { member: Member }) {
 
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
-type Tab = 'profile' | 'health' | 'donations' | 'posts';
+type Tab = 'profile' | 'health' | 'donations' | 'posts' | 'settings';
 
 type PostStatus = 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED';
 type PostCategory = 'EVENT_RECAP' | 'HEALTH_TIPS' | 'COMMUNITY_STORY' | 'ANNOUNCEMENT';
@@ -433,6 +434,82 @@ interface UploadFile {
   progress: number;
   path: string | null;
   error: boolean;
+}
+
+// ─── Settings Tab ─────────────────────────────────────────────────────────────
+
+function SettingsTab() {
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/member/preferences')
+      .then((r) => r.json())
+      .then((d) => {
+        if (typeof d.emailNotifications === 'boolean') setEmailNotifications(d.emailNotifications);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const toggle = async (checked: boolean) => {
+    setSaving(true); setSaved(false);
+    setEmailNotifications(checked);
+    try {
+      await fetch('/api/member/preferences', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailNotifications: checked }),
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div className="flex justify-center py-20"><Loader2 className="w-7 h-7 animate-spin text-primary" /></div>;
+
+  return (
+    <div className="max-w-lg space-y-6">
+      <div>
+        <h2 className="text-lg font-bold text-foreground mb-1">Notification Preferences</h2>
+        <p className="text-sm text-muted-foreground">Control how Run4Health communicates with you.</p>
+      </div>
+
+      <Card>
+        <CardContent className="p-5">
+          <div className="flex items-start justify-between gap-6">
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-sm text-foreground leading-tight">Email notifications</p>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                Receive an email whenever a new program or article is published. Turned on by default — you can switch it off at any time.
+              </p>
+              {saved && (
+                <p className="text-xs text-primary font-medium mt-2 flex items-center gap-1.5">
+                  <CheckCircle className="w-3.5 h-3.5" /> Preference saved
+                </p>
+              )}
+            </div>
+            <div className="flex-shrink-0 flex items-center gap-2 pt-0.5">
+              {saving && <Loader2 className="w-3.5 h-3.5 animate-spin text-muted-foreground" />}
+              <Switch
+                checked={emailNotifications}
+                onCheckedChange={toggle}
+                disabled={saving}
+                aria-label="Toggle email notifications"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <p className="text-xs text-muted-foreground">
+        More notification options will be available in a future update.
+      </p>
+    </div>
+  );
 }
 
 // ─── My Posts Tab ──────────────────────────────────────────────────────────────
@@ -675,6 +752,7 @@ export default function MemberDashboardPage() {
     { tab: 'health', label: 'Health Records', icon: Activity },
     { tab: 'donations', label: 'My Donations', icon: Heart },
     { tab: 'posts', label: 'My Posts', icon: FileText },
+    { tab: 'settings', label: 'Settings', icon: Settings },
   ];
 
   const tabTitles: Record<Tab, string> = {
@@ -682,6 +760,7 @@ export default function MemberDashboardPage() {
     health: 'Health Records',
     donations: 'My Donations',
     posts: 'My Posts',
+    settings: 'Settings',
   };
 
   if (loading) return (
@@ -779,6 +858,7 @@ export default function MemberDashboardPage() {
             {activeTab === 'health' && <HealthTab />}
             {activeTab === 'donations' && <DonationsTab member={member} />}
             {activeTab === 'posts' && <MyPostsTab />}
+            {activeTab === 'settings' && <SettingsTab />}
           </main>
         </SidebarInset>
       </div>

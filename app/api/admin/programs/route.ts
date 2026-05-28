@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getAdminFromCookie } from '@/lib/auth';
+import { notifyMembers } from '@/lib/notify-members';
 import type { ProgramCategory, ProgramStatus } from '@prisma/client';
 
 function slugify(title: string): string {
@@ -54,5 +55,18 @@ export async function POST(req: NextRequest) {
       adminId: admin.id,
     },
   });
+
+  // Fire-and-forget — don't block the response on email delivery
+  notifyMembers({
+    type: 'program',
+    title: program.title,
+    excerpt: program.excerpt ?? '',
+    slug: program.slug ?? '',
+    meta: [
+      ...(program.date ? [{ label: 'Date', value: new Date(program.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) }] : []),
+      ...(program.location ? [{ label: 'Location', value: program.location }] : []),
+    ],
+  }).catch(() => {/* swallow */});
+
   return Response.json({ program }, { status: 201 });
 }

@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Check, X, Trash2, Loader2, ImagePlus, Tag, Eye, LayoutDashboard, Users, Heart, ShieldCheck, FileText, Images, Dumbbell, LogOut, Mail, MessageSquare, ChevronRight } from 'lucide-react';
+import GalleryMultiUpload, { type GalleryTag as GalleryTagType } from '@/components/admin/gallery-multi-upload';
 
 const TipTapEditor = dynamic(() => import('@/components/editor/tiptap-editor'), { ssr: false });
 const TipTapViewer = dynamic(() => import('@/components/editor/tiptap-viewer'), { ssr: false });
@@ -820,24 +821,16 @@ function PostsTab() {
 
 // ─── Gallery Tab ─────────────────────────────────────────────────────────────────────
 
-interface GalleryTag { id: string; name: string; slug: string; }
 interface GalleryImage {
   id: string; path: string; altText: string | null; caption: string | null;
   createdAt: string;
-  tags: { tag: GalleryTag }[];
+  tags: { tag: GalleryTagType }[];
 }
 
 function GalleryAdminTab() {
   const [images, setImages] = useState<GalleryImage[]>([]);
-  const [tags, setTags] = useState<GalleryTag[]>([]);
+  const [tags, setTags] = useState<GalleryTagType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
-  const [uploadPct, setUploadPct] = useState(0);
-  const [newTagName, setNewTagName] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [altText, setAltText] = useState('');
-  const [caption, setCaption] = useState('');
-  const fileRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -851,35 +844,6 @@ function GalleryAdminTab() {
 
   useEffect(() => { load(); }, [load]);
 
-  const createTag = async () => {
-    if (!newTagName.trim()) return;
-    const res = await fetch('/api/admin/gallery/tags', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: newTagName.trim() }),
-    });
-    const data = await res.json();
-    setTags(prev => [...prev.filter(t => t.id !== data.tag.id), data.tag]);
-    setNewTagName('');
-  };
-
-  const uploadImage = async (file: File) => {
-    setUploading(true); setUploadPct(0);
-    try {
-      const fd = new FormData();
-      fd.append('files', file);
-      const res = await axios.post<{ paths: string[] }>('/api/upload?folder=gallery', fd, {
-        onUploadProgress(e) { if (e.total) setUploadPct(Math.round((e.loaded * 100) / e.total)); },
-      });
-      const path = res.data.paths[0];
-      await fetch('/api/admin/gallery', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path, altText: altText || null, caption: caption || null, tagIds: selectedTags }),
-      });
-      setAltText(''); setCaption(''); setSelectedTags([]);
-      load();
-    } finally { setUploading(false); setUploadPct(0); }
-  };
-
   const deleteImage = async (id: string) => {
     if (!window.confirm('Delete this image?')) return;
     await fetch('/api/admin/gallery', {
@@ -891,52 +855,46 @@ function GalleryAdminTab() {
 
   return (
     <div className="space-y-6">
-      {/* Upload panel */}
+      {/* Multi-upload panel */}
       <Card>
-        <CardHeader><CardTitle className="text-base">Upload Image</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid sm:grid-cols-2 gap-3">
-            <div><Label>Alt Text</Label><Input className="mt-1" value={altText} onChange={e => setAltText(e.target.value)} placeholder="Description for accessibility" /></div>
-            <div><Label>Caption</Label><Input className="mt-1" value={caption} onChange={e => setCaption(e.target.value)} placeholder="Visible caption" /></div>
-          </div>
-          {/* Tag selection */}
-          <div>
-            <Label className="mb-1 block">Tags</Label>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {tags.map(t => (
-                <button key={t.id} type="button" onClick={() => setSelectedTags(prev => prev.includes(t.id) ? prev.filter(x => x !== t.id) : [...prev, t.id])}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border transition-colors ${
-                    selectedTags.includes(t.id) ? 'bg-primary text-primary-foreground border-primary' : 'border-border hover:border-primary/40'
-                  }`}><Tag className="w-3 h-3" />{t.name}
-                </button>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <Input value={newTagName} onChange={e => setNewTagName(e.target.value)} placeholder="New tag name" className="h-8 text-xs" onKeyDown={e => e.key === 'Enter' && createTag()} />
-              <Button size="sm" variant="outline" onClick={createTag} className="h-8">Add Tag</Button>
-            </div>
-          </div>
-          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) uploadImage(f); e.target.value = ''; }} />
-          {uploading ? (
-            <div className="space-y-2">
-              <div className="w-full h-2 bg-border rounded-full overflow-hidden"><div className="h-full bg-primary transition-all" style={{ width: `${uploadPct}%` }} /></div>
-              <p className="text-xs text-muted-foreground text-center">{uploadPct}%</p>
-            </div>
-          ) : (
-            <Button onClick={() => fileRef.current?.click()} className="gap-2 w-full">
-              <ImagePlus className="w-4 h-4" /> Choose & Upload Image
-            </Button>
-          )}
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <ImagePlus className="w-4 h-4 text-primary" />
+            Upload Images
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <GalleryMultiUpload
+            tags={tags}
+            onUploaded={load}
+            onNewTag={(tag) => setTags(prev => [...prev.filter(t => t.id !== tag.id), tag])}
+          />
         </CardContent>
       </Card>
 
       {/* Image grid */}
-      {loading ? <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div> : (
+      {loading ? (
+        <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
+      ) : images.length === 0 ? (
+        <div className="text-center py-16 text-muted-foreground text-sm">
+          No images yet. Upload some above!
+        </div>
+      ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {images.map(im => (
             <div key={im.id} className="relative group rounded-xl overflow-hidden border border-border aspect-square">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={im.path} alt={im.altText ?? ''} className="w-full h-full object-cover" />
-              {im.tags[0] && <div className="absolute top-1.5 left-1.5 bg-primary/90 text-white text-xs px-2 py-0.5 rounded-full">{im.tags[0].tag.name}</div>}
+              {im.tags[0] && (
+                <div className="absolute top-1.5 left-1.5 bg-primary/90 text-white text-xs px-2 py-0.5 rounded-full">
+                  {im.tags[0].tag.name}
+                </div>
+              )}
+              {im.caption && (
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-2 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
+                  <p className="text-white text-[10px] truncate">{im.caption}</p>
+                </div>
+              )}
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <button onClick={() => deleteImage(im.id)} className="w-8 h-8 rounded-full bg-destructive flex items-center justify-center text-white hover:bg-destructive/80 transition-colors">
                   <Trash2 className="w-3.5 h-3.5" />

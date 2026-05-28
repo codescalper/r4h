@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getAdminFromCookie } from '@/lib/auth';
+import { notifyMembers } from '@/lib/notify-members';
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -21,6 +22,21 @@ export async function PUT(req: NextRequest, { params }: Params) {
       publishedAt: status === 'APPROVED' ? new Date() : post.publishedAt,
     },
   });
+
+  // Notify members when a post transitions to APPROVED
+  if (status === 'APPROVED' && post.status !== 'APPROVED') {
+    const fullPost = await prisma.post.findUnique({ where: { id } });
+    if (fullPost) {
+      notifyMembers({
+        type: 'post',
+        title: fullPost.title,
+        excerpt: fullPost.excerpt ?? '',
+        slug: fullPost.slug,
+        meta: [{ label: 'Category', value: fullPost.category.replace(/_/g, ' ') }],
+      }).catch(() => {/* swallow */});
+    }
+  }
+
   return Response.json({ post: updated });
 }
 

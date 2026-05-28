@@ -30,6 +30,7 @@ export async function GET() {
       emergencyContact: true,
       status: true,
       createdAt: true,
+      emailNotifications: true,
     },
   });
 

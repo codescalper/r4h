@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/s
 import { Bebas_Neue, Lora } from "next/font/google"
 import { Menu } from "lucide-react"
 import ThemeToggle from "./theme-toggle"
+import SearchDialog from "@/components/search-dialog"
 
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
 const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
@@ -67,6 +68,7 @@ function Navbar() {
 
         {/* Right */}
         <div className="hidden lg:flex items-center gap-2">
+          <SearchDialog />
           <ThemeToggle />
           <Link href="/member/login" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors px-2 py-1">
             Member Login
@@ -81,6 +83,7 @@ function Navbar() {
 
         {/* Mobile hamburger */}
         <div className="flex lg:hidden items-center gap-1">
+          <SearchDialog />
           <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>

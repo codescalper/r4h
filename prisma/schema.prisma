@@ -86,6 +86,9 @@ model Member {
   password        String?
   status          MemberStatus @default(PENDING)
 
+  // Preferences
+  emailNotifications Boolean @default(true)
+
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
