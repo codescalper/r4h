@@ -156,7 +156,7 @@ export default function GalleryMultiUpload({ tags, onUploaded, onNewTag }: Props
         onDrop={handleDrop}
         onClick={() => !uploading && fileInputRef.current?.click()}
         className={[
-          "relative rounded-2xl border-2 border-dashed cursor-pointer",
+          "relative rounded-2xl bo`rder-2 border-dashed cursor-pointer",
           "flex flex-col items-center justify-center gap-3 py-10 px-6",
           "transition-all duration-200",
           dragging

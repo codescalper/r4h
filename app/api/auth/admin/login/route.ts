@@ -30,7 +30,11 @@ export async function POST(request: NextRequest) {
     await setAdminCookie(token);
 
     return Response.json({ success: true, admin: { id: admin.id, email: admin.email, name: admin.name } });
-  } catch {
-    return Response.json({ error: 'Internal server error.' }, { status: 500 });
+  } catch (error) {
+    console.error('[admin-login] UNHANDLED ERROR:', error);
+    const message = process.env.NODE_ENV === 'development'
+      ? String(error)
+      : 'Internal server error.';
+    return Response.json({ error: message }, { status: 500 });
   }
 }
