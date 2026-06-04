@@ -10,11 +10,11 @@ import { bebasNeue, lora } from "@/lib/fonts"
 
 export default function AboutPage() {
   const timeline = [
-    { year: "2015", title: "Run4Health Founded", desc: "Coach Shashi Nair launches Run4Health with a small group of 20 runners at Upvan Lake, Thane." },
-    { year: "2017", title: "First Half Marathon", desc: "Organized Thane's first community-led half marathon with 500 participants." },
-    { year: "2019", title: "Yoga Program Launch", desc: "Expanded beyond running with weekly yoga sessions at local parks." },
-    { year: "2022", title: "₹5L Milestone", desc: "Crossed ₹5,00,000 in community donations directed to healthcare NGOs." },
-    { year: "2024", title: "2400+ Members Strong", desc: "Now Thane's largest fitness community spanning multiple suburbs and districts." },
+    { year: "2015 – Run4Health Founded", title: "", desc: "From a handful of walkers, a movement was born." },
+    { year: "2017 – Structured Training Programs Introduced", title: "", desc: "Structured training transformed aspirations into achievable goals." },
+    { year: "2019 – First Large-Scale Participation in Running Events", title: "", desc: "The community made its mark in organized running events." },
+    { year: "2022 – First Full Marathon Finishers", title: "", desc: "Marathon dreams became reality for dedicated team members." },
+    { year: "2024 – Women's Fitness Group Launched", title: "", desc: "A new chapter began with a dedicated Women's Fitness Group." },
   ]
 
   return (
@@ -36,8 +36,8 @@ export default function AboutPage() {
       {/* Mission & Vision */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid sm:grid-cols-2 gap-6">
         {[
-          { title: "Mission", icon: <Zap className="w-5 h-5" />, text: "To build a healthier, more active community across Thane and beyond through accessible fitness programs and health education." },
-          { title: "Vision", icon: <TrendingUp className="w-5 h-5" />, text: "A world where every individual has the tools, support, and inspiration to lead an active and healthy life." },
+          { title: "Mission", icon: <Zap className="w-5 h-5" />, text: "To build a healthier and more active community, through simple fitness programs and awareness sessions." },
+          { title: "Vision", icon: <TrendingUp className="w-5 h-5" />, text: "A world where every individual is inspired and supported to lead an active and healthy life, building stronger and healthier communities." },
         ].map((c, i) => (
           <motion.div key={c.title} whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
             <Card className="h-full border-primary/20 bg-primary/5">
@@ -63,10 +63,11 @@ export default function AboutPage() {
                 <p className={`${bebasNeue.className} text-4xl tracking-wider text-foreground`}>Coach Shashi Nair</p>
                 <p className={`${lora.className} text-primary font-medium mb-3`}>Founder & Head Coach</p>
                 <p className={`${lora.className} text-muted-foreground leading-relaxed mb-5`}>
-                  Coach Shashi Nair has been at the forefront of community fitness for over a decade. A certified marathon coach and wellness advocate, he founded Run4Health with a singular belief: that movement is medicine.
+                  Coach Shashi Nair has been a driving force in community fitness for over a decade. A certified fitness coach and passionate wellness advocate, he founded Run4Health on a simple yet powerful belief: movement is medicine.
+                  Through his guidance, hundreds of individuals have embraced healthier lifestyles, improved their fitness, and discovered the transformative power of running. His mission is to inspire people of all ages and fitness levels to make health, fitness, and wellbeing a lifelong journey.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {["Certified Marathon Coach","10+ Years Experience","5000+ Lives Impacted"].map(b => (
+                  {["Certified Fitness Coach","10+ Years of Experience","Positively Impacted lives of Many"].map(b => (
                     <Badge key={b} variant="outline" className="border-primary/30 text-primary text-xs">{b}</Badge>
                   ))}
                 </div>
@@ -99,7 +100,7 @@ export default function AboutPage() {
             {[
               { title: "Community", icon: <Users className="w-6 h-6" />, text: "Every member belongs. We grow together, celebrate together, and support each other through every finish line." },
               { title: "Consistency", icon: <Activity className="w-6 h-6" />, text: "Progress is built daily. We show up — rain or shine — because habits define health." },
-              { title: "Courage", icon: <Zap className="w-6 h-6" />, text: "Taking the first step is the hardest. We celebrate every beginner and every personal record." },
+              { title: "Courage", icon: <Zap className="w-6 h-6" />, text: "Taking the first step is the hardest. We celebrate every beginner and every personal Achievements." },
               { title: "Care", icon: <Heart className="w-6 h-6" />, text: "We care for our members' holistic wellbeing — physical, mental, and social health." },
             ].map((v, i) => (
               <motion.div key={v.title} whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }}>

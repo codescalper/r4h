@@ -33,7 +33,7 @@ export default function AboutPreview() {
             <CardContent className="p-5 sm:p-8">
               <Badge className="mb-4 bg-primary/20 text-primary border-0">Our Mission</Badge>
               <blockquote className={`${bebasNeue.className} text-2xl sm:text-3xl lg:text-4xl tracking-wide text-foreground leading-tight`}>
-                &ldquo;Empowering communities through movement, health education, and collective action.&rdquo;
+                &ldquo;Empowering communities toward better health through fitness, awareness, and collective action.&rdquo;
               </blockquote>
               <Separator className="my-6" />
               <div className="flex items-center gap-3">

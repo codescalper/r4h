@@ -139,6 +139,15 @@ export default function RegisterPage() {
               <Card className="border-border">
                 <CardHeader><CardTitle className={`${bebasNeue.className} text-2xl tracking-wide`}>Personal Information</CardTitle></CardHeader>
                 <CardContent className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Gender {errors.gender && <span className="text-destructive text-xs ml-1">{errors.gender}</span>}</Label>
+                    <Select onValueChange={v => setForm(p => ({...p, gender: v}))}>
+                      <SelectTrigger className="mt-1"><SelectValue placeholder="Select gender" /></SelectTrigger>
+                      <SelectContent>
+                        {[{v:"MALE",l:"Male"},{v:"FEMALE",l:"Female"},{v:"OTHER",l:"Other"}].map(g => <SelectItem key={g.v} value={g.v}>{g.l}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   {[
                     { label: "First Name", key: "firstName" as const, placeholder: "Rahul" },
                     { label: "Last Name", key: "lastName" as const, placeholder: "Sharma" },
@@ -154,15 +163,6 @@ export default function RegisterPage() {
                       {errors[f.key] && <p className="text-destructive text-xs mt-1">{errors[f.key]}</p>}
                     </div>
                   ))}
-                  <div>
-                    <Label>Gender {errors.gender && <span className="text-destructive text-xs ml-1">{errors.gender}</span>}</Label>
-                    <Select onValueChange={v => setForm(p => ({...p, gender: v}))}>
-                      <SelectTrigger className="mt-1"><SelectValue placeholder="Select gender" /></SelectTrigger>
-                      <SelectContent>
-                        {[{v:"MALE",l:"Male"},{v:"FEMALE",l:"Female"},{v:"OTHER",l:"Other"}].map(g => <SelectItem key={g.v} value={g.v}>{g.l}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </CardContent>
               </Card>
               <Button className="mt-4 w-full gap-1" onClick={() => { if(validateStep1()) setStep(2) }}>
