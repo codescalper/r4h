@@ -67,7 +67,7 @@ export default function AboutPage() {
                   Through his guidance, hundreds of individuals have embraced healthier lifestyles, improved their fitness, and discovered the transformative power of running. His mission is to inspire people of all ages and fitness levels to make health, fitness, and wellbeing a lifelong journey.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {["Certified Fitness Coach","10+ Years of Experience","Positively Impacted lives of Many Lives"].map(b => (
+                  {["Certified Fitness Coach","10+ Years of Experience","Positively Impacted lives of Many"].map(b => (
                     <Badge key={b} variant="outline" className="border-primary/30 text-primary text-xs">{b}</Badge>
                   ))}
                 </div>
