@@ -7,7 +7,7 @@ Two ways to auto-deploy when you push to GitHub:
 | Approach | How it works | Best for |
 |----------|-------------|----------|
 | **GitHub Actions** (already set up) | GitHub runs the deploy on their servers via SSH | Public repo, GitHub-native |
-| **Webhook** (new) | GitHub hits a URL on YOUR server → server deploys itself | Private repo, full control |
+| **Webhook** (already set up) | GitHub hits a URL on YOUR server → server deploys itself | Private repo, full control |
 
 ---
 
@@ -165,15 +165,18 @@ pm2 logs r4h
 sudo mkdir -p /var/www/r4h /var/log/r4h
 sudo chown -R $USER:$USER /var/www/r4h /var/log/r4h
 
-# 2. Clone the repo
+# 2. Authenticate with GitHub (required for PRIVATE repos)
+#    Generate a PAT at: https://github.com/settings/tokens (repo read-only)
+#    Then set the remote URL with it:
 git clone https://github.com/YOUR_USER/r4h.git /var/www/r4h
+cd /var/www/r4h
+git remote set-url origin https://<YOUR_PAT>@github.com/YOUR_USER/r4h.git
 
 # 3. Create .env file
-cd /var/www/r4h
 nano .env
 # Paste all your env vars (DATABASE_URL, JWT_SECRET, etc.)
 
-# 4. Create PM2 config (see above)
+# 4. Create PM2 config (see below — copy the ecosystem.config.js)
 
 # 5. Make deploy.sh executable
 chmod +x deploy.sh

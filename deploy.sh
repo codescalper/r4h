@@ -1,7 +1,11 @@
 #!/bin/bash
-# deploy.sh — runs on the Linux server, triggered by GitHub Actions
+# deploy.sh — runs on the Linux server, triggered by webhook or manually
 # Place this at: /var/www/r4h/deploy.sh
 # Make executable: chmod +x /var/www/r4h/deploy.sh
+#
+# ⚠️ IMPORTANT: If your repo is PRIVATE, on the server run ONCE:
+#   git remote set-url origin https://<PAT>@github.com/<USER>/r4h.git
+# Replace <PAT> with a GitHub Personal Access Token (repo read-only).
 
 set -e  # exit immediately on any error
 
