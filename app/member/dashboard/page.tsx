@@ -393,7 +393,19 @@ function FilesSection({
     setFilesMsg(null);
     setUploadingReport(true);
     try {
-      await uploadFile(file, "user_reports");
+      const uploadedPath = await uploadFile(file, "user_reports");
+      if (!uploadedPath) throw new Error("No path returned");
+      // Register the report in the database
+      const res = await fetch("/api/member/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          path: uploadedPath,
+          filename: file.name,
+          size: file.size,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to save report record");
       setFilesMsg({ text: "Medical report uploaded.", ok: true });
       onUpdate();
     } catch (err) {
@@ -567,6 +579,9 @@ function HealthTab() {
     notes: "",
   });
   const [saving, setSaving] = useState(false);
+  const [reportFile, setReportFile] = useState<File | null>(null);
+  const [uploadingReport, setUploadingReport] = useState(false);
+  const reportRef = useRef<HTMLInputElement>(null);
 
   const fetchRecords = useCallback(async () => {
     const res = await fetch("/api/member/health");
@@ -588,9 +603,37 @@ function HealthTab() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
+    if (res.ok && reportFile) {
+      // Upload + register report
+      setUploadingReport(true);
+      try {
+        const fd = new FormData();
+        fd.append("files", reportFile);
+        const upRes = await fetch("/api/upload?folder=user_reports", {
+          method: "POST",
+          body: fd,
+        });
+        const upData = await upRes.json();
+        if (upRes.ok && upData.paths?.[0]) {
+          await fetch("/api/member/reports", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              path: upData.paths[0],
+              filename: reportFile.name,
+              size: reportFile.size,
+            }),
+          });
+        }
+      } finally {
+        setUploadingReport(false);
+      }
+    }
     setSaving(false);
     if (res.ok) {
       setShowForm(false);
+      setReportFile(null);
+      if (reportRef.current) reportRef.current.value = "";
       setForm({
         weight: "",
         height: "",
@@ -660,12 +703,57 @@ function HealthTab() {
               className="w-full px-3 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-sm text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
             />
           </div>
+
+          {/* Report upload */}
+          <div>
+            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
+              Attach Report{" "}
+              <span className="font-normal">(PDF or image, optional)</span>
+            </label>
+            <div className="flex items-center gap-3">
+              <input
+                ref={reportRef}
+                type="file"
+                accept=".pdf,image/*"
+                className="hidden"
+                onChange={(e) => setReportFile(e.target.files?.[0] ?? null)}
+              />
+              <button
+                type="button"
+                onClick={() => reportRef.current?.click()}
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-600 dark:text-zinc-400 hover:border-primary/40 hover:text-primary transition"
+              >
+                <Upload className="w-4 h-4" />
+                {reportFile ? reportFile.name : "Choose file"}
+              </button>
+              {reportFile && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setReportFile(null);
+                    if (reportRef.current) reportRef.current.value = "";
+                  }}
+                  className="text-xs text-destructive hover:underline"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          </div>
+
           <button
             type="submit"
-            disabled={saving}
+            disabled={saving || uploadingReport}
             className="w-full py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm disabled:opacity-60 transition"
           >
-            {saving ? "Saving…" : "Save Entry"}
+            {saving || uploadingReport ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                {uploadingReport ? "Uploading report…" : "Saving…"}
+              </span>
+            ) : (
+              "Save Entry"
+            )}
           </button>
         </form>
       )}
@@ -910,7 +998,7 @@ function DonationsTab({ member }: { member: Member }) {
 type Tab =
   | "profile"
   | "health"
-  | "donations"
+  // | "donations"  // hidden
   | "posts"
   | "messages"
   | "settings";
@@ -1669,7 +1757,7 @@ export default function MemberDashboardPage() {
   }> = [
     { tab: "profile", label: "My Profile", icon: User },
     { tab: "health", label: "Health Records", icon: Activity },
-    { tab: "donations", label: "My Donations", icon: Heart },
+    // Donations tab hidden: { tab: "donations", label: "My Donations", icon: Heart },
     { tab: "posts", label: "My Posts", icon: FileText },
     {
       tab: "messages",
@@ -1683,7 +1771,7 @@ export default function MemberDashboardPage() {
   const tabTitles: Record<Tab, string> = {
     profile: "My Profile",
     health: "Health Records",
-    donations: "My Donations",
+    // donations: "My Donations",
     posts: "My Posts",
     messages: "Messages from Admin",
     settings: "Settings",
@@ -1832,7 +1920,7 @@ export default function MemberDashboardPage() {
               <ProfileTab member={member} onUpdate={fetchProfile} />
             )}
             {activeTab === "health" && <HealthTab />}
-            {activeTab === "donations" && <DonationsTab member={member} />}
+            {/* Donations tab hidden: {activeTab === "donations" && <DonationsTab member={member} />} */}
             {activeTab === "posts" && <MyPostsTab />}
             {activeTab === "messages" && (
               <MessagesTab onUnreadChange={refreshUnread} />

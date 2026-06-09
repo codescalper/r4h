@@ -1,18 +1,23 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Bebas_Neue, Lora } from "next/font/google"
-import { Menu } from "lucide-react"
-import ThemeToggle from "./theme-toggle"
-import SearchDialog from "@/components/search-dialog"
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Bebas_Neue, Lora } from "next/font/google";
+import { Menu } from "lucide-react";
+import ThemeToggle from "./theme-toggle";
+import SearchDialog from "@/components/search-dialog";
 
-const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
-const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
+const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] });
+const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] });
 
 const links: { label: string; href: string }[] = [
   { label: "Home", href: "/" },
@@ -21,33 +26,41 @@ const links: { label: string; href: string }[] = [
   { label: "News", href: "/news" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
-]
+];
 
 // ─── Navbar ──────────────────────────────────────────────────────────────────
 function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
-  const pathname = usePathname()
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
-    window.addEventListener("scroll", onScroll)
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href)
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-background/90 backdrop-blur-md border-b border-border shadow-sm" : "bg-transparent"
+        scrolled
+          ? "bg-background/90 backdrop-blur-md border-b border-border shadow-sm"
+          : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="w-10 h-10 rounded-full overflow-hidden border border-border bg-card flex items-center justify-center">
-            <Image src="/logo.png" alt="Run4Health" width={36} height={36} className="object-contain" />
+            <Image
+              src="/logo.png"
+              alt="Run4Health"
+              width={36}
+              height={36}
+              className="object-contain"
+            />
           </div>
         </Link>
 
@@ -58,7 +71,9 @@ function Navbar() {
               key={l.href}
               href={l.href}
               className={`${lora.className} text-sm font-medium transition-colors hover:text-primary ${
-                isActive(l.href) ? "text-primary font-semibold" : "text-muted-foreground"
+                isActive(l.href)
+                  ? "text-primary font-semibold"
+                  : "text-muted-foreground"
               }`}
             >
               {l.label}
@@ -70,15 +85,22 @@ function Navbar() {
         <div className="hidden lg:flex items-center gap-2">
           <SearchDialog />
           <ThemeToggle />
-          <Link href="/member/login" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors px-2 py-1">
+          <Link
+            href="/member/login"
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors px-2 py-1"
+          >
             Member Login
           </Link>
           <Link href="/join">
-            <Button size="sm" className="gap-1">Join Now</Button>
+            <Button size="sm" className="gap-1">
+              Join Now
+            </Button>
           </Link>
+          {/* Donate button hidden
           <Link href="/donate">
             <Button size="sm" variant="outline" className="gap-1 border-primary text-primary hover:bg-primary/10">Donate</Button>
           </Link>
+          */}
         </div>
 
         {/* Mobile hamburger */}
@@ -87,17 +109,36 @@ function Navbar() {
           <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon"><Menu className="w-5 h-5" /></Button>
+              <Button variant="ghost" size="icon">
+                <Menu className="w-5 h-5" />
+              </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[min(85vw,22rem)] p-0 flex flex-col">
+            <SheetContent
+              side="right"
+              className="w-[min(85vw,22rem)] p-0 flex flex-col"
+            >
               {/* Sheet header */}
               <div className="flex items-center gap-3 px-6 py-5 border-b border-border">
                 <div className="w-9 h-9 rounded-full overflow-hidden border border-border bg-card flex items-center justify-center shrink-0">
-                  <Image src="/logo.png" alt="Run4Health" width={32} height={32} className="object-contain" />
+                  <Image
+                    src="/logo.png"
+                    alt="Run4Health"
+                    width={32}
+                    height={32}
+                    className="object-contain"
+                  />
                 </div>
                 <div>
-                  <SheetTitle className={`${bebasNeue.className} tracking-wider text-base text-foreground leading-none`}>Run4Health</SheetTitle>
-                  <p className={`${lora.className} text-xs text-muted-foreground`}>Fitness First</p>
+                  <SheetTitle
+                    className={`${bebasNeue.className} tracking-wider text-base text-foreground leading-none`}
+                  >
+                    Run4Health
+                  </SheetTitle>
+                  <p
+                    className={`${lora.className} text-xs text-muted-foreground`}
+                  >
+                    Fitness First
+                  </p>
                 </div>
               </div>
 
@@ -113,7 +154,9 @@ function Navbar() {
                         : "text-foreground hover:bg-muted"
                     }`}
                   >
-                    {isActive(l.href) && <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />}
+                    {isActive(l.href) && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                    )}
                     {l.label}
                   </Link>
                 ))}
@@ -124,10 +167,15 @@ function Navbar() {
                 <Link href="/join" className="block">
                   <Button className="w-full gap-2">Join Now</Button>
                 </Link>
+                {/* Donate button hidden
                 <Link href="/donate" className="block">
                   <Button variant="outline" className="w-full gap-2 border-primary text-primary hover:bg-primary/10">Donate</Button>
                 </Link>
-                <Link href="/member/login" className="text-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2">
+                */}
+                <Link
+                  href="/member/login"
+                  className="text-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2"
+                >
                   Already a member? Log in →
                 </Link>
               </div>
@@ -136,7 +184,7 @@ function Navbar() {
         </div>
       </div>
     </header>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

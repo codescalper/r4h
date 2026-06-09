@@ -7,7 +7,8 @@ import { getAdminFromCookie, getMemberFromCookie } from '@/lib/auth';
 
 const UPLOAD_ROOT = resolve(process.cwd(), 'uploads');
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+const ALLOWED_REPORT_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
 const ALLOWED_FOLDERS = ['news', 'user_profile', 'user_reports', 'gallery', 'programs', 'misc'];
 
 function ext(mime: string): string {
@@ -16,6 +17,7 @@ function ext(mime: string): string {
     'image/png': '.png',
     'image/gif': '.gif',
     'image/webp': '.webp',
+    'application/pdf': '.pdf',
   };
   return map[mime] ?? '.bin';
 }
@@ -51,7 +53,8 @@ export async function POST(req: NextRequest) {
   const results: string[] = [];
 
   for (const file of files) {
-    if (!ALLOWED_TYPES.includes(file.type)) {
+    const allowedTypes = folder === 'user_reports' ? ALLOWED_REPORT_TYPES : ALLOWED_IMAGE_TYPES;
+    if (!allowedTypes.includes(file.type)) {
       return NextResponse.json({ error: `File type ${file.type} not allowed` }, { status: 400 });
     }
     if (file.size > MAX_FILE_SIZE) {

@@ -62,7 +62,11 @@ export async function POST(request: NextRequest) {
   }
 
   const adminRow = await prisma.admin.findUnique({ where: { id: admin.id } });
-  const adminName = adminRow?.name ?? 'Run4Health Team';
+  if (!adminRow) {
+    // JWT token is valid but admin no longer exists in DB (e.g. deleted)
+    return Response.json({ error: 'Admin account not found. Please log in again.' }, { status: 401 });
+  }
+  const adminName = adminRow.name ?? 'Run4Health Team';
 
   const dashboardLink = `${BASE_URL}/member/dashboard`;
   const supportEmail = EMAIL || 'support@run4health.in';

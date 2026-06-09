@@ -48,7 +48,8 @@ function DashboardPage() {
             { id: "profile", label: "Profile", icon: <Users className="w-4 h-4" /> },
             { id: "health", label: "Health Data", icon: <Activity className="w-4 h-4" /> },
             { id: "reports", label: "Reports", icon: <BarChart3 className="w-4 h-4" /> },
-            { id: "donations", label: "Donations", icon: <Heart className="w-4 h-4" /> },
+            // Donations tab hidden
+            // { id: "donations", label: "Donations", icon: <Heart className="w-4 h-4" /> },
           ].map(n => (
             <button key={n.id} onClick={() => setActiveTab(n.id)}
               className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${activeTab === n.id ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
@@ -70,7 +71,7 @@ function DashboardPage() {
 
         {/* Mobile tab select */}
         <div className="lg:hidden border-b border-border px-4 py-2 flex gap-2 overflow-x-auto">
-          {["profile","health","reports","donations"].map(t => (
+          {["profile","health","reports" /* ,"donations" */].map(t => (
             <Button key={t} size="sm" variant={activeTab === t ? "default" : "ghost"} onClick={() => setActiveTab(t)} className="capitalize shrink-0 text-xs">{t}</Button>
           ))}
         </div>
@@ -224,6 +225,7 @@ function DashboardPage() {
               </motion.div>
             )}
 
+            {/* Donations section hidden
             {activeTab === "donations" && (
               <motion.div key="donations" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                 <h2 className={`${bebasNeue.className} text-3xl tracking-wide text-foreground mb-6`}>DONATIONS</h2>
@@ -258,6 +260,7 @@ function DashboardPage() {
                 </Card>
               </motion.div>
             )}
+            */}
           </AnimatePresence>
         </div>
       </main>
