@@ -248,7 +248,7 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
       <section className="relative min-h-screen flex items-center overflow-hidden bg-background">
         {/* Left gradient bg */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute left-0 top-0 w-1/2 h-full bg-gradient-to-br from-primary/20 via-primary/5 to-transparent" />
+          <div className="absolute left-0 top-0 w-1/2 h-full bg-liner-to-br from-primary/20 via-primary/5 to-transparent" />
           <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-bl from-accent/10 to-transparent" />
           {/* diagonal divider */}
           <div className="absolute inset-0" style={{ background: "linear-gradient(120deg, var(--primary) 0%, transparent 55%)", opacity: 0.06 }} />
@@ -395,7 +395,7 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
             {programs.map((p, i) => (
               <motion.div key={p.title} whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 40 }} transition={{ delay: i * 0.15 }} viewport={{ once: true }} whileHover={{ y: -4 }} className="snap-start shrink-0 w-72 sm:w-80">
                 <Card className="h-full border-border hover:border-primary/40 transition-all duration-200 overflow-hidden">
-                  <div className={`h-28 bg-gradient-to-br ${p.color} flex items-center justify-center`}>
+                  <div className={`h-28 bg-liner-to-br ${p.color} flex items-center justify-center`}>
                     <div className="text-primary opacity-60">{p.icon}</div>
                   </div>
                   <CardContent className="p-5">
@@ -472,7 +472,7 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
             {news.map((n, i) => (
               <motion.div key={n.title} whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 40 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }} whileHover={{ y: -4 }}>
                 <Card className="h-full overflow-hidden border-border hover:border-primary/30 transition-all">
-                  <div className="h-36 bg-gradient-to-br from-primary/20 via-primary/10 to-accent/20 flex items-center justify-center">
+                  <div className="h-36 bg-liner-to-br from-primary/20 via-primary/10 to-accent/20 flex items-center justify-center">
                     <Newspaper className="w-8 h-8 text-primary/40" />
                   </div>
                   <CardContent className="p-5">
@@ -512,7 +512,7 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
             "from-accent/25 to-primary/15",
           ].map((g, i) => (
             <motion.div key={i} whileInView={{ opacity: 1, scale: 1 }} initial={{ opacity: 0, scale: 0.95 }} transition={{ delay: i * 0.08 }} viewport={{ once: true }}
-              className={`relative h-36 sm:h-48 rounded-lg bg-gradient-to-br ${g} flex items-center justify-center group cursor-pointer overflow-hidden`}
+              className={`relative h-36 sm:h-48 rounded-lg bg-liner-to-br ${g} flex items-center justify-center group cursor-pointer overflow-hidden`}
               onClick={() => setCurrentPage("gallery")}
             >
               <Camera className="w-8 h-8 text-primary/30" />
@@ -676,7 +676,7 @@ function ProgramsPage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void
                   .map((e, i) => (
                   <motion.div key={e.title} whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }} whileHover={{ y: -4 }}>
                     <Card className="h-full overflow-hidden border-border hover:border-primary/30 transition-all">
-                      <div className="h-32 bg-gradient-to-br from-primary/20 via-primary/10 to-accent/20 flex items-center justify-center">
+                      <div className="h-32 bg-liner-to-br from-primary/20 via-primary/10 to-accent/20 flex items-center justify-center">
                         <Dumbbell className="w-8 h-8 text-primary/30" />
                       </div>
                       <CardContent className="p-5">
@@ -805,7 +805,7 @@ function NewsPage() {
                 {articles.filter(a => tab === "all" || a.cat.toLowerCase().replace(/ /g,"-") === tab).map((a, i) => (
                   <motion.div key={a.title} whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }} whileHover={{ y: -4 }}>
                     <Card className="h-full overflow-hidden border-border hover:border-primary/30 transition-all">
-                      <div className="h-36 bg-gradient-to-br from-primary/20 via-primary/10 to-accent/20 flex items-center justify-center">
+                      <div className="h-36 bg-liner-to-br from-primary/20 via-primary/10 to-accent/20 flex items-center justify-center">
                         <Newspaper className="w-8 h-8 text-primary/30" />
                       </div>
                       <CardContent className="p-5">
@@ -1440,7 +1440,7 @@ function GalleryPage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {images.filter(im => tab === "all" || im.cat.toLowerCase() === tab).map((im, i) => (
                   <motion.div key={im.title} whileInView={{ opacity: 1, scale: 1 }} initial={{ opacity: 0, scale: 0.95 }} transition={{ delay: i * 0.05 }} viewport={{ once: true }}
-                    className={`relative h-40 sm:h-52 rounded-xl bg-gradient-to-br ${im.gradient} flex items-center justify-center group cursor-pointer overflow-hidden`}
+                    className={`relative h-40 sm:h-52 rounded-xl bg-liner-to-br ${im.gradient} flex items-center justify-center group cursor-pointer overflow-hidden`}
                     onClick={() => { setActiveIndex(images.findIndex(x => x.title === im.title)); setLightboxOpen(true) }}
                   >
                     <Camera className="w-7 h-7 text-primary/30" />
@@ -1462,7 +1462,7 @@ function GalleryPage() {
           <DialogHeader>
             <DialogTitle className={`${bebasNeue.className} tracking-wide text-xl`}>{images[activeIndex]?.title}</DialogTitle>
           </DialogHeader>
-          <div className={`h-56 rounded-lg bg-gradient-to-br ${images[activeIndex]?.gradient} flex items-center justify-center`}>
+          <div className={`h-56 rounded-lg bg-liner-to-br ${images[activeIndex]?.gradient} flex items-center justify-center`}>
             <Camera className="w-10 h-10 text-primary/30" />
           </div>
           <div className="flex items-center justify-between mt-2">
@@ -1513,7 +1513,7 @@ function ContactPage() {
           </div>
 
           {/* Map placeholder */}
-          <div className="mt-8 h-56 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 border border-border flex flex-col items-center justify-center gap-2">
+          <div className="mt-8 h-56 rounded-xl bg-liner-to-br from-primary/10 to-accent/10 border border-border flex flex-col items-center justify-center gap-2">
             <MapPin className="w-8 h-8 text-primary/40" />
             <p className={`${lora.className} text-sm text-muted-foreground`}>Thane, Maharashtra</p>
           </div>

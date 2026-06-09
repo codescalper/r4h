@@ -6,13 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Users,
-  Calendar,
-  DollarSign,
-  Trophy,
-  ChevronRight,
-} from "lucide-react";
+import { Users, Calendar, Trophy, ChevronRight } from "lucide-react";
 import { bebasNeue, lora } from "@/lib/fonts";
 import { usePageNavigation } from "@/hooks/use-page-navigation";
 

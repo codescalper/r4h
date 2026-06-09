@@ -166,7 +166,7 @@ function StatCard({
     <div
       className={`rounded-2xl border bg-card p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow ${accent || "border-border"}`}
     >
-      <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+      <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
         <Icon className="w-5 h-5 text-primary" />
       </div>
       <div className="min-w-0">
@@ -654,7 +654,7 @@ function AdminsTab() {
             <span>{msg.text}</span>
             <button
               onClick={() => setMsg(null)}
-              className="text-xs underline opacity-70 hover:opacity-100 flex-shrink-0"
+              className="text-xs underline opacity-70 hover:opacity-100 shrink-0"
             >
               Dismiss
             </button>
@@ -752,7 +752,7 @@ function AdminsTab() {
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm flex-shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0">
                           {a.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -968,7 +968,7 @@ function MessagesTab() {
               <span>{sendMsg.text}</span>
               <button
                 onClick={() => setSendMsg(null)}
-                className="text-xs underline opacity-70 hover:opacity-100 flex-shrink-0"
+                className="text-xs underline opacity-70 hover:opacity-100 shrink-0"
               >
                 Dismiss
               </button>
@@ -1030,7 +1030,7 @@ function MessagesTab() {
                 className="w-full text-left flex items-start gap-3 p-4 rounded-xl border border-border bg-white dark:bg-zinc-900 hover:border-primary/30 transition-colors"
               >
                 <div
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
                     m.scope === "BROADCAST"
                       ? "bg-primary/10 text-primary"
                       : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
@@ -1079,7 +1079,7 @@ function MessagesTab() {
                     })}
                   </p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-1" />
+                <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0 mt-1" />
               </button>
             ))}
           </div>
@@ -2247,7 +2247,7 @@ function ProgramsAdminTab() {
                 <img
                   src={p.coverImagePath}
                   alt=""
-                  className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+                  className="w-14 h-14 rounded-lg object-cover shrink-0"
                 />
               )}
               <div className="flex-1 min-w-0">
@@ -2383,7 +2383,7 @@ export default function AdminDashboardPage() {
             <div className="relative overflow-hidden px-5 py-4 border-b border-border">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent" />
               <div className="relative z-10 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-sm flex-shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-sm shrink-0">
                   <img
                     src="/logo.png"
                     alt=""
@@ -2420,7 +2420,7 @@ export default function AdminDashboardPage() {
                   >
                     <span className="flex items-center gap-3">
                       <item.icon
-                        className={`w-4 h-4 flex-shrink-0 ${activeTab === item.tab ? "text-primary" : ""}`}
+                        className={`w-4 h-4 shrink-0 ${activeTab === item.tab ? "text-primary" : ""}`}
                       />
                       <span
                         className={`text-sm ${activeTab === item.tab ? "font-semibold" : "font-medium"}`}
@@ -2429,7 +2429,7 @@ export default function AdminDashboardPage() {
                       </span>
                     </span>
                     {item.badge != null && item.badge > 0 && (
-                      <span className="ml-auto bg-primary text-primary-foreground text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">
+                      <span className="ml-auto bg-primary text-primary-foreground text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center shrink-0">
                         {item.badge > 9 ? "9+" : item.badge}
                       </span>
                     )}
@@ -2454,7 +2454,7 @@ export default function AdminDashboardPage() {
         <SidebarInset className="flex flex-col flex-1 min-w-0">
           {/* Top bar */}
           <header className="flex items-center gap-3 px-6 py-3.5 border-b border-border bg-card sticky top-0 z-10">
-            <SidebarTrigger className="flex-shrink-0" />
+            <SidebarTrigger className="shrink-0" />
             <div className="h-5 w-px bg-border mx-1" />
             <div className="flex-1 min-w-0">
               <h1 className="text-sm font-bold text-foreground leading-none">
