@@ -1,5 +1,30 @@
 "use client"
 
+/**
+ * DonatePage
+ * -----------------------------------------------------------------------------
+ * Public-facing donation page for Run4Health.
+ *
+ * Responsibilities:
+ *   1. Show a hero with the campaign total raised (animated count-up).
+ *   2. Provide a donation form with preset amounts + custom amount.
+ *   3. Collect donor details (name, email, phone) and an optional message.
+ *   4. Submit the donation to `POST /api/donations`.
+ *   5. On success, swap the form for a thank-you view.
+ *
+ * No auth is required — the donate page is fully public. The backend
+ * `getMemberFromCookie()` call in the API will still link a logged-in
+ * member to their donation record automatically.
+ *
+ * State machine:
+ *   form view  ──(handleDonate success)──▶  success view
+ *   success    ──(Back to Home button)──▶  navigates to home
+ *
+ * NOTE: This page does NOT handle real payment processing yet — it records
+ * a PENDING donation and would later be wired to Razorpay/Stripe.
+ * -----------------------------------------------------------------------------
+ */
+
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
@@ -12,26 +37,47 @@ import { bebasNeue, lora } from "@/lib/fonts"
 import { usePageNavigation } from "@/hooks/use-page-navigation"
 import useCountUp from "./use-count-up"
 
-// ─── Donations page ───────────────────────────────────────────────────────────
+// ─── Component ──────────────────────────────────────────────────────────────
+
 export default function DonatePage() {
   const navigate = usePageNavigation()
+
+  // Preset / custom amount state
   const [amountPreset, setAmountPreset] = useState("")
   const [custom, setCustom] = useState(false)
   const [customAmount, setCustomAmount] = useState("")
+
+  // Donor details
   const [donorName, setDonorName] = useState("")
   const [donorEmail, setDonorEmail] = useState("")
   const [donorPhone, setDonorPhone] = useState("")
+
+  // Donation options
   const [paymentMethod, setPaymentMethod] = useState("UPI")
   const [message, setMessage] = useState("")
+
+  // Submission lifecycle
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState("")
-  const presets = ["100","500","1000","5000"]
 
+  // Quick-pick amounts the user can tap instead of typing a custom one.
+  const presets = ["100", "500", "1000", "5000"]
+
+  // Goal/total raised — animated count-up on mount.
+  // (Replace with real fetched total when a stats endpoint exists.)
   const { count: raised, ref: raisedRef } = useCountUp(1200000, 2000)
+  const GOAL = 2000000
 
+  // Whichever the user picked (preset or custom) is the final amount.
   const finalAmount = custom ? customAmount : amountPreset
 
+  /**
+   * Validate + POST the donation.
+   * - amount must be a positive number
+   * - donor name + email are required
+   * - on success, switch to the thank-you screen
+   */
   async function handleDonate() {
     setSubmitError("")
     if (!finalAmount || Number(finalAmount) < 1) { setSubmitError("Please enter a valid amount."); return }
@@ -54,6 +100,7 @@ export default function DonatePage() {
     }
   }
 
+  // ─── Thank-you view (replaces the form after a successful submit) ──────
   if (submitted) return (
     <div className="min-h-screen flex items-center justify-center pt-20 px-4">
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md">
@@ -72,7 +119,7 @@ export default function DonatePage() {
 
   return (
     <div className="min-h-screen pt-20">
-      {/* Hero */}
+      {/* Hero — title block above the fold. */}
       <section className="relative py-20 overflow-hidden bg-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-primary-foreground">
           <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className={`${bebasNeue.className} text-7xl sm:text-9xl tracking-wider leading-none`}>
@@ -82,51 +129,88 @@ export default function DonatePage() {
         </div>
       </section>
 
+      {/* Two-column layout: form on the left, impact + history on the right. */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid lg:grid-cols-2 gap-12">
-        {/* Form */}
+        {/* ─── Left column: raised counter + donation form ─── */}
         <div>
+          {/* Goal progress — animated counter + progress bar. */}
           <div ref={raisedRef as React.RefObject<HTMLDivElement>} className="mb-8">
             <p className={`${bebasNeue.className} text-5xl tracking-wider text-primary`}>₹{raised.toLocaleString("en-IN")}</p>
-            <p className={`${lora.className} text-sm text-muted-foreground mb-2`}>raised of ₹20,00,000 goal</p>
+            <p className={`${lora.className} text-sm text-muted-foreground mb-2`}>raised of ₹{GOAL.toLocaleString("en-IN")} goal</p>
             <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
-              <motion.div initial={{ width: 0 }} whileInView={{ width: `${(1200000/2000000)*100}%` }} transition={{ duration: 1.5, ease: "easeOut" }} viewport={{ once: true }} className="h-full bg-primary rounded-full" />
+              <motion.div
+                initial={{ width: 0 }}
+                whileInView={{ width: `${(raised / GOAL) * 100}%` }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                viewport={{ once: true }}
+                className="h-full bg-primary rounded-full"
+              />
             </div>
           </div>
 
           <Card className="border-border">
             <CardContent className="p-6 space-y-5">
+              {/* Amount picker: 4 presets + "Custom" toggle. */}
               <div>
                 <Label className={`${lora.className} font-medium text-sm`}>Select Amount</Label>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {presets.map(p => (
-                    <Button key={p} size="sm" variant={amountPreset === p && !custom ? "default" : "outline"}
+                    <Button
+                      key={p}
+                      size="sm"
+                      variant={amountPreset === p && !custom ? "default" : "outline"}
                       onClick={() => { setCustom(false); setAmountPreset(p) }}
                       className="border-primary/30"
                     >₹{Number(p).toLocaleString("en-IN")}</Button>
                   ))}
                   <Button size="sm" variant={custom ? "default" : "outline"} onClick={() => { setCustom(true); setAmountPreset("") }} className="border-primary/30">Custom</Button>
                 </div>
-                {custom && <Input className="mt-2" placeholder="Enter custom amount (₹)" type="number" value={customAmount} onChange={e => setCustomAmount(e.target.value)} />}
+                {/* Custom amount input — only shown when "Custom" is active. */}
+                {custom && (
+                  <Input
+                    className="mt-2"
+                    placeholder="Enter custom amount (₹)"
+                    type="number"
+                    value={customAmount}
+                    onChange={e => setCustomAmount(e.target.value)}
+                  />
+                )}
               </div>
+
+              {/* Donor contact details. */}
               <div><Label>Your Name *</Label><Input className="mt-1" placeholder="Rahul Sharma" value={donorName} onChange={e => setDonorName(e.target.value)} /></div>
               <div><Label>Email *</Label><Input className="mt-1" placeholder="rahul@email.com" type="email" value={donorEmail} onChange={e => setDonorEmail(e.target.value)} /></div>
               <div><Label>Phone (optional)</Label><Input className="mt-1" placeholder="+91 98765 43210" value={donorPhone} onChange={e => setDonorPhone(e.target.value)} /></div>
+
+              {/* Payment method — visual chip selector. */}
               <div>
                 <Label>Payment Method</Label>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {["UPI","CARD","NET_BANKING","CASH","OTHER"].map(m => (
-                    <Button key={m} size="sm" variant={paymentMethod === m ? "default" : "outline"} onClick={() => setPaymentMethod(m)} className="border-primary/30 text-xs">{m.replace("_"," ")}</Button>
+                  {["UPI", "CARD", "NET_BANKING", "CASH", "OTHER"].map(m => (
+                    <Button
+                      key={m}
+                      size="sm"
+                      variant={paymentMethod === m ? "default" : "outline"}
+                      onClick={() => setPaymentMethod(m)}
+                      className="border-primary/30 text-xs"
+                    >{m.replace("_", " ")}</Button>
                   ))}
                 </div>
               </div>
+
+              {/* Optional public message shown on the recent-donations board. */}
               <div><Label>Message (optional)</Label><Textarea className="mt-1 h-20" placeholder="A message of support..." value={message} onChange={e => setMessage(e.target.value)} /></div>
 
+              {/* Validation / network error feedback. */}
               {submitError && <div className="px-3 py-2 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs">{submitError}</div>}
 
+              {/* Submit button — disabled while the request is in flight. */}
               <Button className="w-full gap-2 text-base" size="lg" onClick={handleDonate} disabled={submitting}>
                 {submitting ? "Processing…" : <><Heart className="w-4 h-4" /> Donate Now</>}
               </Button>
               <p className={`${lora.className} text-xs text-center text-muted-foreground`}>Powered by Razorpay — integration ready</p>
+
+              {/* Trust badges (static, no behavior). */}
               <div className="flex justify-around pt-2">
                 {[
                   { icon: <Shield className="w-4 h-4" />, label: "100% Secure" },
@@ -143,7 +227,7 @@ export default function DonatePage() {
           </Card>
         </div>
 
-        {/* Impact + History */}
+        {/* ─── Right column: impact examples + recent donations ─── */}
         <div className="space-y-6">
           <div>
             <h3 className={`${bebasNeue.className} text-3xl tracking-wide text-foreground mb-4`}>YOUR IMPACT</h3>
@@ -163,6 +247,8 @@ export default function DonatePage() {
             </div>
           </div>
 
+          {/* Recent donations — currently hard-coded; replace with a fetch to
+              /api/donations?status=COMPLETED&limit=10 when that endpoint is added. */}
           <div>
             <h3 className={`${bebasNeue.className} text-3xl tracking-wide text-foreground mb-4`}>RECENT DONATIONS</h3>
             <Card className="border-border overflow-hidden">

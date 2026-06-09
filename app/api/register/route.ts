@@ -9,7 +9,11 @@ import { rateLimit, getClientIp, rateLimitExceeded } from '@/lib/rate-limit';
 export const runtime = 'nodejs';
 
 function saveDir(subdir: string): string {
-  const dir = path.join(process.cwd(), 'public', 'uploads', subdir);
+  // Store under the project-root `uploads/` (NOT `public/uploads/`) so the
+  // files are served by the unified /api/files/[...path] route, matching the
+  // rest of the app (post images, gallery, programs, etc.) and the README's
+  // documented folder layout (uploads/user_profile, uploads/user_reports).
+  const dir = path.join(process.cwd(), 'uploads', subdir);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   return dir;
 }
@@ -21,7 +25,7 @@ async function saveFile(file: File, subdir: string): Promise<string> {
   const dest = path.join(dir, filename);
   const buffer = Buffer.from(await file.arrayBuffer());
   fs.writeFileSync(dest, buffer);
-  return `/uploads/${subdir}/${filename}`;
+  return `/api/files/${subdir}/${filename}`;
 }
 
 function str(fd: FormData, key: string): string {
@@ -52,18 +56,10 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'An account with this email already exists.' }, { status: 409 });
     }
 
-    // Handle profile photo
     let profilePhotoPath: string | null = null;
     const photoFile = fd.get('profilePhoto');
     if (photoFile instanceof File && photoFile.size > 0) {
-      profilePhotoPath = await saveFile(photoFile, 'profiles');
-    }
-
-    // Handle medical report
-    let medicalReportPath: string | null = null;
-    const reportFile = fd.get('medicalReport');
-    if (reportFile instanceof File && reportFile.size > 0) {
-      medicalReportPath = await saveFile(reportFile, 'medical-reports');
+      profilePhotoPath = await saveFile(photoFile, 'user_profile');
     }
 
     const age = str(fd, 'age');
@@ -96,12 +92,26 @@ export async function POST(request: NextRequest) {
         fitnessLevel: fitnessLevel as 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED',
         medicalConditions: medicalConditions || null,
         profilePhotoPath,
-        medicalReportPath,
         status: 'PENDING',
       },
     });
 
-    // Send confirmation email
+    // Persist the initial medical report (if any) to the report-history table
+    // so the member can keep uploading additional reports later from their
+    // dashboard. Always records the row, even if no file was uploaded yet.
+    const reportFile = fd.get('medicalReport');
+    if (reportFile instanceof File && reportFile.size > 0) {
+      const reportPath = await saveFile(reportFile, 'user_reports');
+      await prisma.memberReport.create({
+        data: {
+          memberId: member.id,
+          path: reportPath,
+          filename: reportFile.name || 'report',
+          size: reportFile.size,
+        },
+      });
+    }
+
     await sendEmail({
       to: member.email,
       subject: 'We received your Run4Health application!',
@@ -111,7 +121,7 @@ export async function POST(request: NextRequest) {
         email: member.email,
         supportEmail: EMAIL,
       },
-    }).catch(() => {}); // don't fail registration if email fails
+    }).catch(() => {});
 
     return Response.json({
       success: true,

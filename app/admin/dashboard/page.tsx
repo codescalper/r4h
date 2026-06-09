@@ -13,7 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Check, X, Trash2, Loader2, ImagePlus, Tag, Eye, LayoutDashboard, Users, Heart, ShieldCheck, FileText, Images, Dumbbell, LogOut, Mail, MessageSquare, ChevronRight } from 'lucide-react';
+import { Check, X, Trash2, Loader2, ImagePlus, Tag, Eye, LayoutDashboard, Users, Heart, ShieldCheck, FileText, Images, Dumbbell, LogOut, Mail, MessageSquare, Send, Megaphone, ChevronRight } from 'lucide-react';
 import GalleryMultiUpload, { type GalleryTag as GalleryTagType } from '@/components/admin/gallery-multi-upload';
 
 const TipTapEditor = dynamic(() => import('@/components/editor/tiptap-editor'), { ssr: false });
@@ -532,6 +532,328 @@ function AdminsTab() {
   );
 }
 
+// ─── Messages Tab ─────────────────────────────────────────────────────────────
+
+type AdminMessage = {
+  id: string;
+  subject: string;
+  body: string;
+  scope: 'PERSONAL' | 'BROADCAST';
+  read: boolean;
+  readAt: string | null;
+  createdAt: string;
+  member: { id: string; firstName: string; lastName: string; email: string };
+  admin: { id: string; name: string; email: string };
+};
+
+type MemberPicker = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+};
+
+function MessagesTab() {
+  const [messages, setMessages] = useState<AdminMessage[]>([]);
+  const [members, setMembers] = useState<MemberPicker[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [recipient, setRecipient] = useState<string>('__all__');
+  const [subject, setSubject] = useState('');
+  const [body, setBody] = useState('');
+  const [sending, setSending] = useState(false);
+  const [sendMsg, setSendMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [scopeFilter, setScopeFilter] = useState<'ALL' | 'PERSONAL' | 'BROADCAST'>('ALL');
+  const [preview, setPreview] = useState<AdminMessage | null>(null);
+
+  const loadAll = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [m, mems] = await Promise.all([
+        fetch('/api/admin/messages').then((r) => r.json()),
+        fetch('/api/admin/members?status=APPROVED&limit=200').then((r) => r.json()),
+      ]);
+      setMessages(m.messages ?? []);
+      setMembers(
+        (mems.members ?? []).map((mm: MemberPicker) => ({
+          id: mm.id,
+          firstName: mm.firstName,
+          lastName: mm.lastName,
+          email: mm.email,
+          status: mm.status,
+        }))
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { loadAll(); }, [loadAll]);
+
+  const reset = () => {
+    setSubject('');
+    setBody('');
+    setRecipient('__all__');
+    setSendMsg(null);
+  };
+
+  const handleSend = async () => {
+    if (!subject.trim() || !body.trim()) {
+      setSendMsg({ text: 'Subject and message body are required.', ok: false });
+      return;
+    }
+    setSending(true);
+    setSendMsg(null);
+    try {
+      const payload: { subject: string; body: string; memberId?: string } = {
+        subject: subject.trim(),
+        body: body.trim(),
+      };
+      if (recipient !== '__all__') payload.memberId = recipient;
+      const res = await fetch('/api/admin/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setSendMsg({ text: data.error || 'Failed to send message.', ok: false });
+        return;
+      }
+      const recipientCount = data.sent ?? 1;
+      const isBroadcast = recipient === '__all__';
+      setSendMsg({
+        text: isBroadcast
+          ? `Broadcast sent to ${recipientCount} approved member${recipientCount !== 1 ? 's' : ''}.`
+          : 'Personal message sent successfully.',
+        ok: true,
+      });
+      reset();
+      loadAll();
+    } catch {
+      setSendMsg({ text: 'Network error. Please try again.', ok: false });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const filtered = messages.filter((m) => scopeFilter === 'ALL' || m.scope === scopeFilter);
+
+  return (
+    <div className="space-y-6">
+      {/* Composer */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Send className="w-4 h-4 text-primary" /> Compose Message
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <Label>Send to</Label>
+              <Select value={recipient} onValueChange={setRecipient}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all__">All approved members (broadcast)</SelectItem>
+                  {members.map((m) => (
+                    <SelectItem key={m.id} value={m.id}>
+                      {m.firstName} {m.lastName} — {m.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">
+                {recipient === '__all__'
+                  ? 'Each approved member gets a personal copy in their inbox.'
+                  : 'This member receives a personal, addressed email.'}
+              </p>
+            </div>
+            <div>
+              <Label>Subject *</Label>
+              <Input
+                className="mt-1"
+                placeholder="e.g. Update on the Sunday marathon"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                maxLength={200}
+              />
+            </div>
+          </div>
+          <div>
+            <Label>Message *</Label>
+            <Textarea
+              className="mt-1 h-40"
+              placeholder="Write your message here. Plain text only — new lines are preserved."
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              maxLength={10000}
+            />
+            <p className="text-xs text-muted-foreground mt-1">{body.length} / 10000</p>
+          </div>
+          {sendMsg && (
+            <div
+              className={`px-4 py-2.5 rounded-lg text-sm font-medium flex items-start justify-between gap-3 ${
+                sendMsg.ok
+                  ? 'bg-primary/10 text-primary'
+                  : 'bg-destructive/10 text-destructive'
+              }`}
+            >
+              <span>{sendMsg.text}</span>
+              <button
+                onClick={() => setSendMsg(null)}
+                className="text-xs underline opacity-70 hover:opacity-100 flex-shrink-0"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
+          <div className="flex items-center gap-3">
+            <Button onClick={handleSend} disabled={sending} className="gap-2">
+              {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              {recipient === '__all__' ? 'Send broadcast' : 'Send message'}
+            </Button>
+            <Button variant="outline" onClick={reset} disabled={sending}>
+              Clear
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* History */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+            <MessageSquare className="w-4 h-4 text-primary" /> Sent Messages
+          </h2>
+          <div className="flex items-center gap-1.5">
+            {(['ALL', 'PERSONAL', 'BROADCAST'] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => setScopeFilter(s)}
+                className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                  scopeFilter === s
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-background border-border hover:border-primary/40'
+                }`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          </div>
+        ) : filtered.length === 0 ? (
+          <p className="text-center text-sm text-muted-foreground py-12">
+            No messages sent yet. Use the composer above to send your first one.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {filtered.map((m) => (
+              <button
+                key={m.id}
+                onClick={() => setPreview(m)}
+                className="w-full text-left flex items-start gap-3 p-4 rounded-xl border border-border bg-white dark:bg-zinc-900 hover:border-primary/30 transition-colors"
+              >
+                <div
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                    m.scope === 'BROADCAST'
+                      ? 'bg-primary/10 text-primary'
+                      : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300'
+                  }`}
+                >
+                  {m.scope === 'BROADCAST' ? (
+                    <Megaphone className="w-4 h-4" />
+                  ) : (
+                    <Mail className="w-4 h-4" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <span
+                      className={`text-[10px] font-bold tracking-wider px-1.5 py-0.5 rounded ${
+                        m.scope === 'BROADCAST'
+                          ? 'bg-primary/10 text-primary'
+                          : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300'
+                      }`}
+                    >
+                      {m.scope}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      To: {m.member.firstName} {m.member.lastName}
+                    </span>
+                    {m.read ? (
+                      <span className="text-[10px] text-muted-foreground">· Read</span>
+                    ) : (
+                      <span className="text-[10px] text-primary font-semibold">· Unread</span>
+                    )}
+                  </div>
+                  <p className="font-semibold text-sm text-foreground truncate">{m.subject}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(m.createdAt).toLocaleString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-1" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Preview dialog */}
+      <Dialog open={!!preview} onOpenChange={() => setPreview(null)}>
+        <DialogContent className="max-w-xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{preview?.subject}</DialogTitle>
+          </DialogHeader>
+          {preview && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+                <span
+                  className={`text-[10px] font-bold tracking-wider px-1.5 py-0.5 rounded ${
+                    preview.scope === 'BROADCAST'
+                      ? 'bg-primary/10 text-primary'
+                      : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300'
+                  }`}
+                >
+                  {preview.scope}
+                </span>
+                <span>To: {preview.member.firstName} {preview.member.lastName} ({preview.member.email})</span>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Sent on{' '}
+                {new Date(preview.createdAt).toLocaleString('en-IN', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </div>
+              <div className="rounded-lg border border-border bg-muted/30 p-4 text-sm whitespace-pre-wrap break-words">
+                {preview.body}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
 // ─── Dashboard Overview ───────────────────────────────────────────────────────
 
 function DashboardOverview({ stats }: { stats: Stats | null }) {
@@ -679,7 +1001,7 @@ function ContactsTab() {
 
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
-type Tab = 'dashboard' | 'members' | 'donations' | 'admins' | 'posts' | 'gallery' | 'programs' | 'contacts';
+type Tab = 'dashboard' | 'members' | 'donations' | 'admins' | 'posts' | 'gallery' | 'programs' | 'contacts' | 'messages';
 
 // ─── Post types ─────────────────────────────────────────────────────────────────────
 
@@ -1108,6 +1430,7 @@ export default function AdminDashboardPage() {
     { tab: 'gallery', label: 'Gallery', icon: Images },
     { tab: 'programs', label: 'Programs', icon: Dumbbell },
     { tab: 'contacts', label: 'Contact Inbox', icon: MessageSquare },
+    { tab: 'messages', label: 'Messages', icon: Send },
   ];
 
   const tabTitles: Record<Tab, string> = {
@@ -1119,6 +1442,7 @@ export default function AdminDashboardPage() {
     gallery: 'Gallery Management',
     programs: 'Programs & Events',
     contacts: 'Contact Inbox',
+    messages: 'Member Messages',
   };
 
   return (
@@ -1203,6 +1527,7 @@ export default function AdminDashboardPage() {
             {activeTab === 'gallery' && <GalleryAdminTab />}
             {activeTab === 'programs' && <ProgramsAdminTab />}
             {activeTab === 'contacts' && <ContactsTab />}
+            {activeTab === 'messages' && <MessagesTab />}
           </main>
         </SidebarInset>
       </div>

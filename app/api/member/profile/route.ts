@@ -26,11 +26,20 @@ export async function GET() {
       fitnessLevel: true,
       medicalConditions: true,
       profilePhotoPath: true,
-      medicalReportPath: true,
       emergencyContact: true,
       status: true,
       createdAt: true,
       emailNotifications: true,
+      medicalReports: {
+        orderBy: { uploadedAt: 'desc' },
+        select: {
+          id: true,
+          path: true,
+          filename: true,
+          size: true,
+          uploadedAt: true,
+        },
+      },
     },
   });
 
@@ -43,7 +52,13 @@ export async function PUT(request: NextRequest) {
   if (!user) return Response.json({ error: 'Unauthorized.' }, { status: 401 });
 
   const body = await request.json();
-  const allowed = ['phone', 'city', 'emergencyContact', 'medicalConditions'];
+  const allowed = [
+    'phone',
+    'city',
+    'emergencyContact',
+    'medicalConditions',
+    'profilePhotoPath',
+  ];
   const data: Record<string, unknown> = {};
   for (const key of allowed) {
     if (body[key] !== undefined) data[key] = body[key];

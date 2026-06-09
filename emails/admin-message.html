@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{subject}} — Run4Health</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f4f5; color: #18181b; }
+  .wrapper { max-width: 600px; margin: 32px auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.08); }
+  .header { background: linear-gradient(135deg, #c89418 0%, #a87a10 100%); padding: 40px 32px 32px; text-align: center; }
+  .header h1 { color: #fff; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-top: 10px; }
+  .header p { color: rgba(255,255,255,0.85); font-size: 14px; margin-top: 5px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+  .type-badge { display: inline-block; background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.4); padding: 4px 14px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-top: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
+  .body { padding: 36px 32px; }
+  .greeting { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .intro { font-size: 14px; color: #52525b; margin-bottom: 24px; line-height: 1.6; }
+  .subject { font-size: 22px; font-weight: 800; color: #18181b; margin-bottom: 16px; line-height: 1.3; }
+  .message { font-size: 15px; line-height: 1.75; color: #3f3f46; background: #fdf8ec; border: 1px solid #f0d070; border-left: 4px solid #c89418; border-radius: 8px; padding: 20px 24px; white-space: pre-wrap; word-wrap: break-word; }
+  .signature { margin-top: 28px; font-size: 14px; color: #3f3f46; line-height: 1.6; }
+  .signature strong { color: #18181b; }
+  .btn-container { text-align: center; margin: 28px 0 8px; }
+  .btn { display: inline-block; background: #c89418; color: #fff; text-decoration: none; padding: 12px 32px; border-radius: 8px; font-size: 14px; font-weight: 700; letter-spacing: 0.3px; }
+  .footer { background: #f4f4f5; padding: 24px 32px; text-align: center; border-top: 1px solid #e4e4e7; }
+  .footer p { font-size: 12px; color: #71717a; line-height: 1.6; }
+  .footer a { color: #c89418; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Run4Health" style="display:inline-block;">
+      <circle cx="28" cy="28" r="28" fill="rgba(255,255,255,0.15)"/>
+      <circle cx="36" cy="14" r="5" fill="rgba(255,255,255,0.95)"/>
+      <path d="M36 19 C33 25 30 29 27 33 L22 44 M36 19 C40 25 45 28 50 30" stroke="rgba(255,255,255,0.95)" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M27 33 C24 38 22 42 19 48 M27 33 C31 38 33 43 32 48" stroke="rgba(255,255,255,0.95)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M33 23 C28 26 24 27 19 25 M39 23 C43 26 47 30 50 30" stroke="rgba(255,255,255,0.95)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    </svg>
+    <h1>Run4Health</h1>
+    <p>Move &bull; Thrive &bull; Repeat</p>
+    <div class="type-badge">{{typeBadge}}</div>
+  </div>
+  <div class="body">
+    <p class="greeting">Hi {{firstName}},</p>
+    <p class="intro">{{introText}}</p>
+
+    <p class="subject">{{subject}}</p>
+    <div class="message">{{body}}</div>
+
+    <p class="signature">
+      Warm regards,<br />
+      <strong>{{adminName}}</strong><br />
+      <span style="color:#71717a;">Run4Health Admin Team</span>
+    </p>
+
+    <div class="btn-container">
+      <a href="{{dashboardLink}}" class="btn">View in your dashboard</a>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Run4Health Community &mdash; Thane, India</p>
+    <p>Questions? <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+  </div>
+</div>
+</body>
+</html>

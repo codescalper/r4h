@@ -23,6 +23,7 @@ model Admin {
   posts               Post[]
   galleryImages       GalleryImage[]
   programs            Program[]
+  sentMessages        Message[]
 }
 
 model AdminPasswordResetToken {
@@ -78,9 +79,8 @@ model Member {
   fitnessLevel    FitnessLevel @default(BEGINNER)
   medicalConditions String?
 
-  // Files (relative paths stored, served from /uploads/...)
+  // Files (relative paths stored, served from /api/files/...)
   profilePhotoPath     String?
-  medicalReportPath    String?
 
   // Auth
   password        String?
@@ -99,6 +99,44 @@ model Member {
   donations             Donation[]
   healthRecords         HealthRecord[]
   posts                 Post[]
+  medicalReports        MemberReport[]
+  receivedMessages      Message[]
+}
+
+// ─── Member Medical Reports (history) ────────────────────────────────────────
+
+model MemberReport {
+  id        String   @id @default(cuid())
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  path      String
+  filename  String
+  size      Int
+  uploadedAt DateTime @default(now())
+}
+
+// ─── Admin → Member Messages ──────────────────────────────────────────────────
+
+enum MessageScope {
+  PERSONAL
+  BROADCAST
+}
+
+model Message {
+  id        String       @id @default(cuid())
+  subject   String
+  body      String       @db.Text
+  scope     MessageScope @default(PERSONAL)
+  read      Boolean      @default(false)
+  readAt    DateTime?
+
+  adminId   String
+  admin     Admin        @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  memberId  String
+  member    Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime     @default(now())
 }
 
 model MemberPasswordResetToken {

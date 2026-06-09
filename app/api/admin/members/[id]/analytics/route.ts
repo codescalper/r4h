@@ -32,7 +32,16 @@ export async function GET(
       medicalConditions: true,
       emergencyContact: true,
       profilePhotoPath: true,
-      medicalReportPath: true,
+      medicalReports: {
+        orderBy: { uploadedAt: 'desc' },
+        select: {
+          id: true,
+          path: true,
+          filename: true,
+          size: true,
+          uploadedAt: true,
+        },
+      },
       status: true,
       createdAt: true,
       updatedAt: true,
