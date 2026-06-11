@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
         phone: true,
         city: true,
         gender: true,
-        age: true,
+        dateOfBirth: true,
         fitnessLevel: true,
         profilePhotoPath: true,
         status: true,

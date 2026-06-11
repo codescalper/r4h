@@ -62,7 +62,6 @@ export async function POST(request: NextRequest) {
       profilePhotoPath = await saveFile(photoFile, 'user_profile');
     }
 
-    const age = str(fd, 'age');
     const dateOfBirth = str(fd, 'dateOfBirth');
     const emergencyContact = str(fd, 'emergencyContact');
     const height = str(fd, 'height');
@@ -82,7 +81,6 @@ export async function POST(request: NextRequest) {
         gender: gender as 'MALE' | 'FEMALE' | 'OTHER',
         city,
         emergencyContact: emergencyContact || null,
-        age: age ? parseInt(age) : null,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
         height: height ? parseFloat(height) : null,
         weight: weight ? parseFloat(weight) : null,

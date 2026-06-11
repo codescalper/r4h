@@ -25,6 +25,7 @@ import {
   ShieldCheck,
   Clock,
 } from "lucide-react";
+import { calculateAge } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -61,7 +62,6 @@ type MemberDetail = {
   phone: string;
   city: string;
   gender: string;
-  age: number | null;
   dateOfBirth: string | null;
   fitnessLevel: string;
   height: number | null;
@@ -400,10 +400,13 @@ export default function MemberDetailPage({
                     <MapPin className="w-3.5 h-3.5" />
                     {member.city}
                   </span>
-                  {member.age && (
+                  {member.dateOfBirth && (
                     <span className="text-sm text-muted-foreground flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5" />
-                      {member.age} yrs
+                      {new Date(member.dateOfBirth).toLocaleDateString(
+                        "en-IN",
+                      )}{" "}
+                      ({calculateAge(member.dateOfBirth)} yrs)
                     </span>
                   )}
                   <span className="text-sm text-muted-foreground flex items-center gap-1">
@@ -480,20 +483,11 @@ export default function MemberDetailPage({
               <InfoRow icon={Phone} label="Phone" value={member.phone} />
               <InfoRow icon={MapPin} label="City" value={member.city} />
               <InfoRow icon={User} label="Gender" value={member.gender} />
-              {member.age && (
-                <InfoRow
-                  icon={Calendar}
-                  label="Age"
-                  value={`${member.age} years`}
-                />
-              )}
               {member.dateOfBirth && (
                 <InfoRow
                   icon={Calendar}
                   label="Date of Birth"
-                  value={new Date(member.dateOfBirth).toLocaleDateString(
-                    "en-IN",
-                  )}
+                  value={`${new Date(member.dateOfBirth).toLocaleDateString("en-IN")} (${calculateAge(member.dateOfBirth)} yrs)`}
                 />
               )}
               <InfoRow
@@ -765,7 +759,7 @@ export default function MemberDetailPage({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Monthly donations bar chart */}
           <div className="lg:col-span-2">
-            <Card>
+            {/* <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">
                   <DollarSign className="w-4 h-4 text-primary" /> Donation
@@ -825,7 +819,7 @@ export default function MemberDetailPage({
                   </div>
                 )}
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
 
           {/* Donation breakdown + post pie */}
@@ -888,7 +882,7 @@ export default function MemberDetailPage({
         {/* ── Recent Activity Tables ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Donations */}
-          <Card>
+          {/* <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
                 <Heart className="w-4 h-4 text-primary" /> Recent Donations
@@ -924,7 +918,7 @@ export default function MemberDetailPage({
                 </div>
               )}
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Recent Posts */}
           <Card>

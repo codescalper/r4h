@@ -25,11 +25,11 @@ function AdminPage() {
   const [loginError, setLoginError] = useState("")
   const [activeTab, setActiveTab] = useState("dashboard")
   const [members, setMembers] = useState([
-    { name: "Rahul Sharma", age: 28, city: "Thane", status: "Approved", joined: "Jan 2025" },
-    { name: "Priya Kulkarni", age: 32, city: "Mulund", status: "Pending", joined: "Jan 2025" },
-    { name: "Kiran Mehta", age: 24, city: "Navi Mumbai", status: "Pending", joined: "Feb 2025" },
-    { name: "Sunita Desai", age: 45, city: "Thane West", status: "Approved", joined: "Dec 2024" },
-    { name: "Vikram Patil", age: 30, city: "Dombivli", status: "Rejected", joined: "Nov 2024" },
+    { name: "Rahul Sharma", dob: "15 Jan 1995", city: "Thane", status: "Approved", joined: "Jan 2025" },
+    { name: "Priya Kulkarni", dob: "12 Mar 1993", city: "Mulund", status: "Pending", joined: "Jan 2025" },
+    { name: "Kiran Mehta", dob: "04 Sep 2000", city: "Navi Mumbai", status: "Pending", joined: "Feb 2025" },
+    { name: "Sunita Desai", dob: "22 Nov 1979", city: "Thane West", status: "Approved", joined: "Dec 2024" },
+    { name: "Vikram Patil", dob: "18 Jun 1994", city: "Dombivli", status: "Rejected", joined: "Nov 2024" },
   ])
   const [newsList, setNewsList] = useState([
     { title: "5K Run in Kopri Locality", by: "Suresh M.", date: "Feb 1, 2025", status: "Pending" },
@@ -157,13 +157,13 @@ function AdminPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead className="bg-muted/50"><tr>
-                        {["Name","Age","City","Status","Joined","Actions"].map(h => <th key={h} className={`${lora.className} text-left text-xs text-muted-foreground px-4 py-2.5 font-medium whitespace-nowrap`}>{h}</th>)}
+                        {["Name","DOB","City","Status","Joined","Actions"].map(h => <th key={h} className={`${lora.className} text-left text-xs text-muted-foreground px-4 py-2.5 font-medium whitespace-nowrap`}>{h}</th>)}
                       </tr></thead>
                       <tbody>
                         {members.map((m, i) => (
                           <tr key={m.name} className="border-t border-border">
                             <td className={`${lora.className} px-4 py-3 font-medium text-foreground`}>{m.name}</td>
-                            <td className={`${lora.className} px-4 py-3 text-muted-foreground`}>{m.age}</td>
+                            <td className={`${lora.className} px-4 py-3 text-muted-foreground`}>{m.dob}</td>
                             <td className={`${lora.className} px-4 py-3 text-muted-foreground`}>{m.city}</td>
                             <td className="px-4 py-3">
                               <Badge variant="outline" className={`text-xs border ${statusColor(m.status)}`}>{m.status}</Badge>

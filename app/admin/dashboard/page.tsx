@@ -94,7 +94,7 @@ type Member = {
   phone: string;
   city: string;
   gender: string;
-  age: number | null;
+  dateOfBirth: string | null;
   fitnessLevel: string;
   profilePhotoPath: string | null;
   status: "PENDING" | "APPROVED" | "REJECTED";

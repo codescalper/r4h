@@ -16,7 +16,6 @@ export async function GET() {
       phone: true,
       city: true,
       gender: true,
-      age: true,
       dateOfBirth: true,
       height: true,
       weight: true,

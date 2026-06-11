@@ -65,7 +65,6 @@ model Member {
   email           String       @unique
   phone           String
   dateOfBirth     DateTime?
-  age             Int?
   gender          Gender
   city            String
   emergencyContact String?

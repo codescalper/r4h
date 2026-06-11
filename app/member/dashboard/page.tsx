@@ -42,6 +42,7 @@ import {
   Upload,
   Inbox,
 } from "lucide-react";
+import { calculateAge } from "@/lib/utils";
 
 const TipTapEditor = dynamic(
   () => import("@/components/editor/tiptap-editor"),
@@ -70,7 +71,7 @@ type Member = {
   phone: string;
   city: string;
   gender: string;
-  age: number | null;
+  dateOfBirth: string | null;
   height: number | null;
   weight: number | null;
   thighSize: number | null;
@@ -214,7 +215,7 @@ function ProfileTab({
           <h3 className="font-bold text-foreground mb-3 text-sm">
             Personal Details
           </h3>
-          <ProfileField label="Age" value={member.age?.toString()} />
+          <ProfileField label="Date of Birth" value={member.dateOfBirth ? `${new Date(member.dateOfBirth).toLocaleDateString("en-IN")} (${calculateAge(member.dateOfBirth)} yrs)` : "—"} />
           <ProfileField label="Gender" value={member.gender} />
           <ProfileField label="City" value={city} />
           <ProfileField label="Fitness Level" value={member.fitnessLevel} />
