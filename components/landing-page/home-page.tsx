@@ -12,6 +12,7 @@ import AboutPreview from "./sections/about-preview"
 import ProgramsPreview from "./sections/programs-preview"
 import StatsBar from "./sections/stats-bar"
 import TestimonialsSection from "./sections/testimonials-section"
+import MembersSection from "./sections/members-section"
 import NewsPreview from "./sections/news-preview"
 import GalleryPreview from "./sections/gallery-preview"
 
@@ -39,6 +40,7 @@ export default function HomePage() {
         <ProgramsPreview />
         <StatsBar />
         <TestimonialsSection />
+        <MembersSection />
         <NewsPreview />
         <GalleryPreview />
       </div>

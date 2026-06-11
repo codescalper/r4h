@@ -86,7 +86,7 @@ model Member {
   status          MemberStatus @default(PENDING)
 
   // Preferences
-  emailNotifications Boolean @default(true)
+  emailNotifications Boolean @default(false)
 
   // Timestamps
   createdAt DateTime @default(now())

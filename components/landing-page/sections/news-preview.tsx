@@ -17,6 +17,7 @@ interface Post {
   slug: string
   excerpt: string | null
   category: string
+  coverImagePath: string | null
   publishedAt: string | null
   images: PostImage[]
 }
@@ -101,16 +102,19 @@ export default function NewsPreview() {
                   onClick={() => router.push(`/news/${post.slug}`)}
                 >
                   <div className="h-36 overflow-hidden bg-gradient-to-br from-primary/20 via-primary/10 to-accent/20 flex items-center justify-center">
-                    {post.images[0] ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={post.images[0].path}
-                        alt={post.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <Newspaper className="w-8 h-8 text-primary/40" />
-                    )}
+                    {(() => {
+                      const imgSrc = post.images[0]?.path || post.coverImagePath
+                      return imgSrc ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={imgSrc}
+                          alt={post.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Newspaper className="w-8 h-8 text-primary/40" />
+                      )
+                    })()}
                   </div>
                   <CardContent className="p-5">
                     <Badge variant="secondary" className="mb-2 text-xs">

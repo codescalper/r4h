@@ -23,6 +23,7 @@ const links: { label: string; href: string }[] = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Programs", href: "/programs" },
+  { label: "Our Members", href: "/members" },
   { label: "News", href: "/news" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
@@ -90,6 +91,11 @@ function Navbar() {
             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors px-2 py-1"
           >
             Member Login
+          </Link>
+          <Link href="/members">
+            <Button size="sm" variant="ghost" className="gap-1 text-muted-foreground hover:text-primary">
+              Our Members
+            </Button>
           </Link>
           <Link href="/join">
             <Button size="sm" className="gap-1">
@@ -164,6 +170,9 @@ function Navbar() {
 
               {/* CTA buttons */}
               <div className="flex flex-col gap-3 px-5 pb-8 pt-4 border-t border-border">
+                <Link href="/members" className="block">
+                  <Button variant="outline" className="w-full gap-2">Our Members</Button>
+                </Link>
                 <Link href="/join" className="block">
                   <Button className="w-full gap-2">Join Now</Button>
                 </Link>

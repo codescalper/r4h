@@ -1441,7 +1441,7 @@ function PostsTab() {
       if (writeCover) {
         const fd = new FormData();
         fd.append("files", writeCover);
-        fd.append("folder", "post_covers");
+        fd.append("folder", "news");
         const up = await fetch("/api/upload", { method: "POST", body: fd });
         if (up.ok) {
           const upData = await up.json();
