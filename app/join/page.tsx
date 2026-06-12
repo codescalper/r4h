@@ -1,6 +1,6 @@
-import type { Metadata } from "next"
-import MinimalHeader from "@/components/landing-page/minimal-header"
-import RegisterPage from "@/components/landing-page/register-page"
+import type { Metadata } from "next";
+import MinimalHeader from "@/components/landing-page/minimal-header";
+import RegisterPage from "@/components/landing-page/register-page";
 
 export const metadata: Metadata = {
   title: "Join Run4Health — Become a Member",
@@ -17,16 +17,24 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Join Run4Health — Become a Member",
     description:
-      "Join 2400+ runners and fitness enthusiasts. Register for Run4Health membership in Thane and get access to all programs and events.",
+      "Join 50+ runners and fitness enthusiasts. Register for Run4Health membership in Thane and get access to all programs and events.",
     url: "https://run4health.in/join",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Join Run4Health" }],
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Join Run4Health",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Join Run4Health — Become a Member",
-    description: "Join 2400+ runners. Register for Run4Health membership in Thane.",
+    description:
+      "Join 50+ runners. Register for Run4Health membership in Thane.",
   },
-}
+};
 
 export default function JoinPage() {
   return (
@@ -34,5 +42,5 @@ export default function JoinPage() {
       <MinimalHeader title="Join Run4Health" />
       <RegisterPage />
     </div>
-  )
+  );
 }

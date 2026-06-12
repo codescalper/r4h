@@ -395,7 +395,7 @@ function Hero() {
 // ─── Stats Bar ────────────────────────────────────────────────────────────────
 function StatsBar() {
   const stats = [
-    { label: "Members", end: 2400, suffix: "+", icon: <Users className="size-5" /> },
+    { label: "Members", end: 50, suffix: "+", icon: <Users className="size-5" /> },
     { label: "Events Hosted", end: 150, suffix: "+", icon: <Calendar className="size-5" /> },
     { label: "Funds Raised", end: 1200000, prefix: "₹", suffix: "", icon: <Heart className="size-5" /> },
     { label: "Years Active", end: 8, suffix: "", icon: <Trophy className="size-5" /> },
@@ -875,9 +875,9 @@ function Footer() {
                 </a>
               </li>
               <li>
-                <a href="mailto:hello@run4health.in" className="flex items-center gap-2.5 text-sm text-background/70 hover:text-background transition-colors">
+                <a href="mailto:run4health2026@gmail.com" className="flex items-center gap-2.5 text-sm text-background/70 hover:text-background transition-colors">
                   <Mail className="size-4 text-primary" />
-                  <span>hello@run4health.in</span>
+                  <span>run4health2026@gmail.com</span>
                 </a>
               </li>
             </ul>

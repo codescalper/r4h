@@ -3,6 +3,7 @@ import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { bebasNeue, lora, geistMono } from "@/lib/fonts";
+import { Toaster } from "@/components/ui/sonner";
 
 const BASE_URL = "https://run4health.in";
 
@@ -14,11 +15,17 @@ export const metadata: Metadata = {
     template: "%s | Run4Health",
   },
   description:
-    "Run4Health is Thane's largest running and fitness community with 2400+ members. Join marathon training, yoga, health camps and fun runs across Thane and Mumbai.",
+    "Run4Health is Thane's largest running and fitness community with 50+ members. Join marathon training, yoga, health camps and fun runs across Thane and Mumbai.",
   keywords: [
-    "Run4Health", "running club Thane", "fitness community Mumbai",
-    "marathon training Thane", "yoga Thane", "running events Mumbai",
-    "health fitness club", "community runs", "half marathon Thane",
+    "Run4Health",
+    "running club Thane",
+    "fitness community Mumbai",
+    "marathon training Thane",
+    "yoga Thane",
+    "running events Mumbai",
+    "health fitness club",
+    "community runs",
+    "half marathon Thane",
   ],
   authors: [{ name: "Run4Health", url: BASE_URL }],
   creator: "Run4Health",
@@ -27,7 +34,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large", "max-video-preview": -1 },
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
   },
   alternates: { canonical: BASE_URL },
   openGraph: {
@@ -37,7 +50,7 @@ export const metadata: Metadata = {
     siteName: "Run4Health",
     title: "Run4Health — Fitness Community in Thane & Mumbai",
     description:
-      "Join 2400+ runners and fitness enthusiasts at Run4Health — Thane's premier fitness community. Marathon training, yoga, health camps and more.",
+      "Join 50+ runners and fitness enthusiasts at Run4Health — Thane's premier fitness community. Marathon training, yoga, health camps and more.",
     images: [
       {
         url: "/og-image.png",
@@ -51,15 +64,13 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Run4Health — Fitness Community in Thane & Mumbai",
     description:
-      "Join 2400+ runners at Run4Health — Thane's premier fitness community. Marathon, yoga, health camps and more.",
+      "Join 50+ runners at Run4Health — Thane's premier fitness community. Marathon, yoga, health camps and more.",
     images: ["/og-image.png"],
     creator: "@run4health",
   },
+
   icons: {
-    icon: [
-      { url: "/logo.png", type: "image/png" },
-      { url: "/favicon.ico" },
-    ],
+    icon: "/logo.png",
     apple: "/logo.png",
     shortcut: "/logo.png",
   },
@@ -95,7 +106,7 @@ export default function RootLayout({
               url: "https://run4health.in",
               logo: "https://run4health.in/logo.png",
               description:
-                "Thane's largest running and fitness community with 2400+ members. Marathon training, yoga, health camps and fun runs.",
+                "Thane's largest running and fitness community with 50+ members. Marathon training, yoga, health camps and fun runs.",
               address: {
                 "@type": "PostalAddress",
                 streetAddress: "Run4Health Community Center, Thane West",
@@ -105,17 +116,22 @@ export default function RootLayout({
                 addressCountry: "IN",
               },
               telephone: "+91-98765-43210",
-              email: "hello@run4health.in",
+              email: "run4health2026@gmail.com",
               sameAs: [],
               sport: "Running",
             }),
           }}
         />
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
   );
 }
-

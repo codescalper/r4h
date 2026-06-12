@@ -173,10 +173,14 @@ export default function RegisterPage() {
             Thanks, <strong>{form.firstName}</strong>! Your application is under
             review.
           </p>
+          <p className={`${lora.className} text-sm text-muted-foreground mb-2`}>
+            A confirmation has been sent to <strong>{form.email}</strong>.
+            Please check your <strong>inbox</strong> and <strong>spam</strong>{' '}
+            folder for updates.
+          </p>
           <p className={`${lora.className} text-sm text-muted-foreground mb-6`}>
-            A confirmation has been sent to <strong>{form.email}</strong>. Once
-            approved, you&apos;ll receive a link to set your password and access
-            your member dashboard.
+            Once approved, you&apos;ll receive a link to set your password and
+            access your member dashboard.
           </p>
           <Button onClick={() => navigate("home")} className="gap-1">
             Back to Home <ArrowRight className="w-4 h-4" />

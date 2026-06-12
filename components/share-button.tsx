@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import { Share2, Check } from "lucide-react"
+import { Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 
 interface ShareButtonProps {
   title: string
@@ -39,8 +39,6 @@ function execCopy(text: string) {
 }
 
 export default function ShareButton({ title, text, url, coverImage, className, size = "sm" }: ShareButtonProps) {
-  const [copied, setCopied] = useState(false)
-
   const handleShare = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -79,8 +77,9 @@ export default function ShareButton({ title, text, url, coverImage, className, s
 
     // Clipboard fallback (desktop / unsupported browsers)
     copyToClipboard(shareUrl)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    toast.success("Link copied!", {
+      duration: 2500,
+    })
   }
 
   return (
@@ -91,17 +90,8 @@ export default function ShareButton({ title, text, url, coverImage, className, s
       onClick={handleShare}
       className={`gap-2 ${className ?? ""}`}
     >
-      {copied ? (
-        <>
-          <Check className="w-4 h-4 text-green-600" />
-          Copied!
-        </>
-      ) : (
-        <>
-          <Share2 className="w-4 h-4" />
-          Share
-        </>
-      )}
+      <Share2 className="w-4 h-4" />
+      Share
     </Button>
   )
 }

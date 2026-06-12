@@ -176,7 +176,7 @@ function Footer({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
           <div className={`${lora.className} text-sm text-muted-foreground space-y-2`}>
             <div className="flex gap-2 items-start"><MapPin className="w-4 h-4 mt-0.5 shrink-0 text-primary" /><span>Run4Health Community Center, Thane West, Maharashtra — 400601</span></div>
             <div className="flex gap-2 items-center"><Phone className="w-4 h-4 shrink-0 text-primary" /><span>+91 98765 43210</span></div>
-            <div className="flex gap-2 items-center"><Mail className="w-4 h-4 shrink-0 text-primary" /><span>hello@run4health.in</span></div>
+            <div className="flex gap-2 items-center"><Mail className="w-4 h-4 shrink-0 text-primary" /><span>run4health2026@gmail.com</span></div>
           </div>
         </div>
       </div>
@@ -218,7 +218,7 @@ function useCountUp(target: number, duration = 1800) {
 // ─── PAGE 1: Home ─────────────────────────────────────────────────────────────
 function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) {
   const stats = [
-    { label: "Members", value: 2400, suffix: "+" },
+    { label: "Members", value: 50, suffix: "+" },
     { label: "Events", value: 150, suffix: "+" },
     { label: "₹ Raised (L)", value: 12, suffix: "L+" },
     { label: "Years Active", value: 8, suffix: "" },
@@ -534,7 +534,7 @@ function AboutPage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void })
     { year: "2017", title: "First Half Marathon", desc: "Organized Thane's first community-led half marathon with 500 participants." },
     { year: "2019", title: "Yoga Program Launch", desc: "Expanded beyond running with weekly yoga sessions at local parks." },
     { year: "2022", title: "₹5L Milestone", desc: "Crossed ₹5,00,000 in community donations directed to healthcare NGOs." },
-    { year: "2024", title: "2400+ Members Strong", desc: "Now Thane's largest fitness community spanning multiple suburbs and districts." },
+    { year: "2024", title: "50+ Members Strong", desc: "Now Thane's largest fitness community spanning multiple suburbs and districts." },
   ]
 
   return (
@@ -1508,7 +1508,7 @@ function ContactPage() {
             </div>
             <div className="flex gap-3 items-center">
               <Mail className="w-5 h-5 text-primary shrink-0" />
-              <div><p className="font-medium text-foreground">Email</p><p className="text-sm">hello@run4health.in</p></div>
+              <div><p className="font-medium text-foreground">Email</p><p className="text-sm">run4health2026@gmail.com</p></div>
             </div>
           </div>
 

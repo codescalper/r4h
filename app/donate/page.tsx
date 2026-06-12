@@ -1,11 +1,11 @@
-import type { Metadata } from "next"
-import MinimalHeader from "@/components/landing-page/minimal-header"
-import DonatePage from "@/components/landing-page/donate-page"
+import type { Metadata } from "next";
+import MinimalHeader from "@/components/landing-page/minimal-header";
+import DonatePage from "@/components/landing-page/donate-page";
 
 export const metadata: Metadata = {
   title: "Donate to Run4Health",
   description:
-    "Support Run4Health's mission to build healthier communities in Thane. Your donation funds health camps, running kits and community events for 2400+ members.",
+    "Support Run4Health's mission to build healthier communities in Thane. Your donation funds health camps, running kits and community events for 50+ members.",
   keywords: [
     "donate Run4Health",
     "fitness community donation",
@@ -18,14 +18,22 @@ export const metadata: Metadata = {
     description:
       "Your contribution directly funds health camps, running kits and community events across Thane and Mumbai.",
     url: "https://run4health.in/donate",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Donate to Run4Health" }],
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Donate to Run4Health",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Donate to Run4Health",
-    description: "Support health camps, running kits and community events across Thane and Mumbai.",
+    description:
+      "Support health camps, running kits and community events across Thane and Mumbai.",
   },
-}
+};
 
 export default function DonateRoutePage() {
   return (
@@ -33,5 +41,5 @@ export default function DonateRoutePage() {
       <MinimalHeader title="Donate to Run4Health" />
       <DonatePage />
     </div>
-  )
+  );
 }

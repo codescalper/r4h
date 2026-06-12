@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function MemberForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -31,7 +32,9 @@ export default function MemberForgotPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-primary/10 dark:from-zinc-900 dark:to-zinc-800 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-white text-2xl font-black mb-4 shadow-lg">🏃</div>
+          <div className="w-16 h-16 rounded-2xl overflow-hidden bg-primary mb-4 shadow-lg mx-auto flex items-center justify-center">
+            <Image src="/logo.png" alt="Run4Health" width={44} height={44} className="object-contain" />
+          </div>
           <h1 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight">Run4Health</h1>
           <p className="text-zinc-500 dark:text-zinc-400 mt-1 text-sm">Member Portal</p>
         </div>
@@ -39,10 +42,15 @@ export default function MemberForgotPasswordPage() {
         <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-100 dark:border-zinc-800 p-8">
           {sent ? (
             <div className="text-center py-4">
-              <div className="text-4xl mb-4">📬</div>
+              <div className="w-14 h-14 rounded-xl overflow-hidden bg-primary/10 mx-auto mb-4 flex items-center justify-center p-2.5">
+                <Image src="/logo.png" alt="Run4Health" width={36} height={36} className="object-contain" />
+              </div>
               <h2 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Check your inbox</h2>
-              <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-6">
+              <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-2">
                 If your email is linked to an approved account, we've sent a reset link. It expires in <strong>1 hour</strong>.
+              </p>
+              <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-6">
+                Please check your <strong>inbox</strong> and <strong>spam</strong> folder if you don't see the email.
               </p>
               <a href="/member/login" className="text-primary hover:underline text-sm font-medium">← Back to login</a>
             </div>

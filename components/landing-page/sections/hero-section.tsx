@@ -38,7 +38,7 @@ const METRICS = [
   },
 ];
 
-const STAT_PILLS = ["50+ Members", "150+ Events", "₹50k+ Raised"];
+const STAT_PILLS = ["50+ Members", "150+ Events"];
 
 export default function HeroSection() {
   const navigate = usePageNavigation();
