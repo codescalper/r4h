@@ -5,7 +5,7 @@ import useCountUp from "@/components/landing-page/use-count-up";
 
 const STATS = [
   { label: "Members", value: 50, suffix: "+" },
-  { label: "Events", value: 150, suffix: "+" },
+  { label: "Training Sessions conducted", value: 500, suffix: "+" },
   // { label: "₹ Raised (L)", value: 12, suffix: "L+" },
   { label: "Years Active", value: 8, suffix: "" },
 ];

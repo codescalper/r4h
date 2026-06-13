@@ -13,8 +13,8 @@ import { usePageNavigation } from "@/hooks/use-page-navigation";
 const STATS = [
   { label: "Members", value: "50+", icon: <Users className="w-5 h-5" /> },
   {
-    label: "Events Hosted",
-    value: "150+",
+    label: "Training Sessions conducted",
+    value: "500+",
     icon: <Calendar className="w-5 h-5" />,
   },
   // { label: "Funds Raised", value: "₹50k+", icon: <DollarSign className="w-5 h-5" /> },

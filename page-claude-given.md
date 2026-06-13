@@ -366,7 +366,7 @@ function HomePage({ setCurrentPage }: { setCurrentPage: (p: PageKey) => void }) 
           <div className="grid grid-cols-2 gap-4">
             {[
               { label: "Members", value: "50+", icon: <Users className="w-5 h-5" /> },
-              { label: "Events Hosted", value: "150+", icon: <Calendar className="w-5 h-5" /> },
+              { label: "Training Sessions conducted", value: "150+", icon: <Calendar className="w-5 h-5" /> },
               { label: "Funds Raised", value: "₹50k+", icon: <DollarSign className="w-5 h-5" /> },
               { label: "Years Active", value: "8 Yrs", icon: <Trophy className="w-5 h-5" /> },
             ].map((s, i) => (

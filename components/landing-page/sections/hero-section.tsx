@@ -38,7 +38,7 @@ const METRICS = [
   },
 ];
 
-const STAT_PILLS = ["50+ Members", "150+ Events"];
+const STAT_PILLS = ["50+ Members", "500+ Training Sessions conducted"];
 
 export default function HeroSection() {
   const navigate = usePageNavigation();
@@ -112,7 +112,7 @@ export default function HeroSection() {
 
           <div className="overflow-hidden">
             <motion.h1
-              className={`${bebasNeue.className} text-[clamp(4rem,13vw,8.5rem)] leading-none tracking-wider text-foreground`}
+              className={`${bebasNeue.className} text-[clamp(4rem,13vw,8.5rem)] leading-none tracking-wider`}
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               transition={{
@@ -121,21 +121,7 @@ export default function HeroSection() {
                 ease: [0.16, 1, 0.3, 1],
               }}
             >
-              RUN FOR
-            </motion.h1>
-          </div>
-          <div className="overflow-hidden">
-            <motion.h1
-              className={`${bebasNeue.className} text-[clamp(4rem,13vw,8.5rem)] leading-none tracking-wider text-primary`}
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              transition={{
-                delay: 0.3,
-                duration: 0.65,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-            >
-              HEALTH
+              <span className="text-foreground">RUN4</span><span className="text-primary">HEALTH</span>
             </motion.h1>
           </div>
 

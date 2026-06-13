@@ -396,7 +396,7 @@ function Hero() {
 function StatsBar() {
   const stats = [
     { label: "Members", end: 50, suffix: "+", icon: <Users className="size-5" /> },
-    { label: "Events Hosted", end: 150, suffix: "+", icon: <Calendar className="size-5" /> },
+    { label: "Training Sessions conducted", end: 150, suffix: "+", icon: <Calendar className="size-5" /> },
     { label: "Funds Raised", end: 1200000, prefix: "₹", suffix: "", icon: <Heart className="size-5" /> },
     { label: "Years Active", end: 8, suffix: "", icon: <Trophy className="size-5" /> },
   ]
