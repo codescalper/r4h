@@ -70,7 +70,7 @@ export default function ProgramDetailPage({ program }: { program: Program }) {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`${bebasNeue.className} text-3xl sm:text-5xl tracking-wide text-white leading-tight`}
+            className={`${bebasNeue.className} text-3xl sm:text-5xl tracking-wide text-primary leading-tight`}
           >
             {program.title}
           </motion.h1>
