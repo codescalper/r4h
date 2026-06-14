@@ -15,6 +15,7 @@ import Highlight from "@tiptap/extension-highlight"
 import { marked } from "marked"
 import axios from "axios"
 import { useCallback, useEffect, useRef } from "react"
+import { toast } from "sonner"
 import {
   Bold, Italic, UnderlineIcon, Strikethrough, Code, Code2, Heading1, Heading2, Heading3,
   List, ListOrdered, Quote, Minus, Link2, Image as ImageIcon, AlignLeft,
@@ -139,7 +140,7 @@ export default function TipTapEditor({
         onImageUpload?.(path)
         onUploadProgress?.(0)
       } catch {
-        alert("Image upload failed. Please try again.")
+        toast.error("Image upload failed. Please try again.")
       }
     },
     [editor, folder, onImageUpload, onUploadProgress],

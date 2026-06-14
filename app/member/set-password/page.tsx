@@ -3,6 +3,7 @@
 import { useState, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { toast } from "sonner";
 
 function SetPasswordForm() {
   const router = useRouter();
@@ -34,7 +35,8 @@ function SetPasswordForm() {
         body: JSON.stringify({ token, password }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.error || 'Failed to set password.'); return; }
+      if (!res.ok) { toast.error(data.error || 'Failed to set password.'); setError(data.error || 'Failed to set password.'); return; }
+      toast.success("Password set successfully! Welcome to Run4Health!");
       setSuccess(true);
       setTimeout(() => router.push('/member/login'), 3000);
     } catch {

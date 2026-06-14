@@ -26,6 +26,7 @@ import {
 import { bebasNeue, lora } from "@/lib/fonts";
 import { usePageNavigation } from "@/hooks/use-page-navigation";
 import { calculateAge } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface RegFormData {
   firstName: string;
@@ -142,11 +143,14 @@ export default function RegisterPage() {
       const res = await fetch("/api/register", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) {
+        toast.error(data.error || "Submission failed. Please try again.");
         setSubmitError(data.error || "Submission failed. Please try again.");
         return;
       }
+      toast.success("Application submitted! Check your email.");
       setSubmitted(true);
     } catch {
+      toast.error("Something went wrong. Please check your connection and try again.");
       setSubmitError(
         "Something went wrong. Please check your connection and try again.",
       );

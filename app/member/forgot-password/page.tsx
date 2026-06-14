@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { toast } from "sonner";
 
 export default function MemberForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -19,7 +20,8 @@ export default function MemberForgotPasswordPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-      if (!res.ok) { const d = await res.json(); setError(d.error); return; }
+      if (!res.ok) { const d = await res.json(); toast.error(d.error); setError(d.error); return; }
+      toast.success("Check your inbox for the reset link.");
       setSent(true);
     } catch {
       setError('Something went wrong. Please try again.');

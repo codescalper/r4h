@@ -70,6 +70,7 @@ const TipTapViewer = dynamic(
   () => import("@/components/editor/tiptap-viewer"),
   { ssr: false },
 );
+import { toast } from "sonner";
 import {
   SidebarProvider,
   Sidebar,
@@ -1463,6 +1464,7 @@ function PostsTab() {
         setWriteError(data.error || "Failed to publish post.");
         return;
       }
+      toast.success("Post published successfully!");
       setWriteSuccess(true);
       setWriteTitle("");
       setWriteCategory("ANNOUNCEMENT");
@@ -1475,6 +1477,7 @@ function PostsTab() {
       }, 1500);
       loadPosts();
     } catch {
+      toast.error("Something went wrong. Please try again.");
       setWriteError("Something went wrong. Please try again.");
     } finally {
       setWriteSubmitting(false);
@@ -1515,6 +1518,7 @@ function PostsTab() {
   const deletePost = async (id: string) => {
     if (!window.confirm("Delete this post?")) return;
     await fetch(`/api/admin/posts/${id}`, { method: "DELETE" });
+    toast.success("Post deleted.");
     loadPosts();
   };
 
@@ -1851,6 +1855,7 @@ function GalleryAdminTab() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
     });
+    toast.success("Image deleted.");
     load();
   };
 
@@ -2056,9 +2061,11 @@ function ProgramsAdminTab() {
           body: JSON.stringify(body),
         });
       }
+      toast.success(editId ? "Program updated." : "Program created.");
       resetForm();
       loadPrograms();
     } catch {
+      toast.error("Save failed.");
       setError("Save failed.");
     } finally {
       setSubmitting(false);
@@ -2068,6 +2075,7 @@ function ProgramsAdminTab() {
   const deleteProgram = async (id: string) => {
     if (!window.confirm("Delete this program?")) return;
     await fetch(`/api/admin/programs/${id}`, { method: "DELETE" });
+    toast.success("Program deleted.");
     loadPrograms();
   };
 

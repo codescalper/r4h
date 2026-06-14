@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Bebas_Neue, Lora } from "next/font/google"
 import { Users, Activity, BarChart3, Heart, Calendar, CheckCircle, LogIn, Newspaper, TrendingUp, X } from "lucide-react"
+import { toast } from "sonner"
 
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] })
 const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] })
@@ -275,7 +276,7 @@ function AdminPage() {
               <motion.div key="donations-admin" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                 <div className="flex items-center justify-between mb-6">
                   <h2 className={`${bebasNeue.className} text-3xl tracking-wide text-foreground`}>DONATIONS</h2>
-                  <Button size="sm" variant="outline" className="gap-1" onClick={() => alert("Export started")}><TrendingUp className="w-3.5 h-3.5" /> Export CSV</Button>
+                  <Button size="sm" variant="outline" className="gap-1" onClick={() => toast.success("Export started")}><TrendingUp className="w-3.5 h-3.5" /> Export CSV</Button>
                 </div>
                 <Card className="border-border overflow-hidden">
                   <div className="overflow-x-auto">

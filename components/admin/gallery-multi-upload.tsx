@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import axios from "axios"
+import { toast } from "sonner"
 
 export interface GalleryTag { id: string; name: string; slug: string }
 
@@ -135,6 +136,11 @@ export default function GalleryMultiUpload({ tags, onUploaded, onNewTag }: Props
 
     setUploading(false)
     onUploaded()
+
+    const successCount = previews.filter((p) => p.status === "done").length
+    const failedCount = previews.filter((p) => p.status === "error").length
+    if (successCount > 0) toast.success(`${successCount} image${successCount > 1 ? "s" : ""} uploaded.`)
+    if (failedCount > 0) toast.error(`${failedCount} upload${failedCount > 1 ? "s" : ""} failed.`)
 
     // Auto-clear successfully uploaded previews after a short delay
     setTimeout(() => {

@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { toast } from "sonner";
 
 function ResetForm() {
   const router = useRouter();
@@ -28,7 +29,8 @@ function ResetForm() {
         body: JSON.stringify({ token, password }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.error || 'Reset failed.'); return; }
+      if (!res.ok) { toast.error(data.error || 'Reset failed.'); setError(data.error || 'Reset failed.'); return; }
+      toast.success("Password updated successfully!");
       setSuccess(true);
       setTimeout(() => router.push('/admin/login'), 2500);
     } catch {

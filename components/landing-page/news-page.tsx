@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import axios from "axios"
 import dynamic from "next/dynamic"
+import { toast } from "sonner"
 
 const TipTapEditor = dynamic(() => import("@/components/editor/tiptap-editor"), { ssr: false })
 
@@ -189,8 +190,10 @@ function NewsPage() {
       const imagePaths = uploading.filter(u => u.path).map(u => u.path!)
       const coverImagePath = coverImage?.path ?? null
       await axios.post("/api/posts", { title, category, content, imagePaths, coverImagePath, status: draft ? "DRAFT" : undefined })
+      toast.success("Story submitted for review!")
       setSubmitted(true)
     } catch {
+      toast.error("Submission failed. Please try again.")
       setSubmitError("Submission failed. Please try again.")
     } finally {
       setSubmitting(false)

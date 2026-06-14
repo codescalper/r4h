@@ -43,6 +43,7 @@ import {
   Inbox,
 } from "lucide-react";
 import { calculateAge } from "@/lib/utils";
+import { toast } from "sonner";
 
 const TipTapEditor = dynamic(
   () => import("@/components/editor/tiptap-editor"),
@@ -375,9 +376,11 @@ function FilesSection({
         body: JSON.stringify({ profilePhotoPath: path }),
       });
       if (!res.ok) throw new Error("Failed to save photo path");
+      toast.success("Profile photo updated.");
       setFilesMsg({ text: "Profile photo updated.", ok: true });
       onUpdate();
     } catch (err) {
+      toast.error("Failed to upload profile photo.");
       setFilesMsg({
         text: err instanceof Error ? err.message : "Upload failed.",
         ok: false,
@@ -407,9 +410,11 @@ function FilesSection({
         }),
       });
       if (!res.ok) throw new Error("Failed to save report record");
+      toast.success("Medical report uploaded.");
       setFilesMsg({ text: "Medical report uploaded.", ok: true });
       onUpdate();
     } catch (err) {
+      toast.error("Failed to upload medical report.");
       setFilesMsg({
         text: err instanceof Error ? err.message : "Upload failed.",
         ok: false,
@@ -632,6 +637,7 @@ function HealthTab() {
     }
     setSaving(false);
     if (res.ok) {
+      toast.success("Health record saved.");
       setShowForm(false);
       setReportFile(null);
       if (reportRef.current) reportRef.current.value = "";
@@ -863,6 +869,7 @@ function DonationsTab({ member }: { member: Member }) {
     });
     setSaving(false);
     if (res.ok) {
+      toast.success("Thank you for your donation!");
       setSuccessMsg("Thank you for your donation! 💚");
       setShowForm(false);
       setForm((v) => ({ ...v, amount: "", message: "" }));
@@ -1255,9 +1262,11 @@ function MyPostsTab() {
       } else {
         await axios.post("/api/posts", body);
       }
+      toast.success(editingId ? "Post updated." : "Post submitted for review.");
       resetForm();
       loadPosts();
     } catch {
+      toast.error("Failed to save. Please try again.");
       setError("Failed to save. Please try again.");
     } finally {
       setSubmitting(false);
@@ -1267,6 +1276,7 @@ function MyPostsTab() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Delete this post?")) return;
     await fetch(`/api/posts/${id}`, { method: "DELETE" });
+    toast.success("Post deleted.");
     loadPosts();
   };
 

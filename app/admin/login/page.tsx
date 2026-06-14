@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { toast } from "sonner";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -25,8 +26,10 @@ export default function AdminLoginPage() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || 'Login failed.'); return; }
+      toast.success("Welcome back!");
       router.push('/admin/dashboard');
     } catch {
+      toast.error("Something went wrong. Please try again.");
       setError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);

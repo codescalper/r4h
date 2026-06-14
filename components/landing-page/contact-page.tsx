@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Bebas_Neue, Lora } from "next/font/google";
 import { CheckCircle, MapPin, Phone, Mail, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"] });
 const lora = Lora({ subsets: ["latin"], weight: ["400", "500", "600"] });
@@ -44,12 +45,15 @@ function ContactPage() {
         body: JSON.stringify({ name, email, subject, message }),
       });
       if (res.ok) {
+        toast.success("Message sent successfully!");
         setSent(true);
       } else {
         const data = await res.json();
+        toast.error(data.error ?? "Failed to send. Please try again.");
         setError(data.error ?? "Failed to send. Please try again.");
       }
     } catch {
+      toast.error("Network error. Please try again.");
       setError("Network error. Please try again.");
     } finally {
       setSubmitting(false);
