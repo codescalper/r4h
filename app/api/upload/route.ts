@@ -7,7 +7,7 @@ import { getAdminFromCookie, getMemberFromCookie } from '@/lib/auth';
 import { compressImage } from '@/lib/compress-image';
 
 const UPLOAD_ROOT = resolve(process.cwd(), 'uploads');
-const MAX_FILE_SIZE = 12 * 1024 * 1024; // 12 MB
+const MAX_FILE_SIZE = 18 * 1024 * 1024; // 18 MB
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const ALLOWED_REPORT_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
 const ALLOWED_FOLDERS = ['news', 'user_profile', 'user_reports', 'gallery', 'programs', 'misc'];
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: `File type ${file.type} not allowed` }, { status: 400 });
     }
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: 'File exceeds 10 MB limit' }, { status: 400 });
+      return NextResponse.json({ error: 'File exceeds 18 MB limit' }, { status: 400 });
     }
     const filename = `${Date.now()}_${randomBytes(6).toString('hex')}${ext(file.type)}`;
     const dest = join(destDir, filename);
