@@ -4,9 +4,10 @@ import { existsSync } from 'fs';
 import { join, resolve, extname } from 'path';
 import { randomBytes } from 'crypto';
 import { getAdminFromCookie, getMemberFromCookie } from '@/lib/auth';
+import { compressImage } from '@/lib/compress-image';
 
 const UPLOAD_ROOT = resolve(process.cwd(), 'uploads');
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_FILE_SIZE = 12 * 1024 * 1024; // 12 MB
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const ALLOWED_REPORT_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
 const ALLOWED_FOLDERS = ['news', 'user_profile', 'user_reports', 'gallery', 'programs', 'misc'];
@@ -62,8 +63,9 @@ export async function POST(req: NextRequest) {
     }
     const filename = `${Date.now()}_${randomBytes(6).toString('hex')}${ext(file.type)}`;
     const dest = join(destDir, filename);
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(dest, buffer);
+    const raw = Buffer.from(await file.arrayBuffer());
+    const compressed = await compressImage(raw, file.type);
+    await writeFile(dest, compressed);
     results.push(`/api/files/${folder}/${filename}`);
   }
 

@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma';
 import { sendEmail } from '@/lib/email';
 import { EMAIL } from '@/lib/constants';
 import { rateLimit, getClientIp, rateLimitExceeded } from '@/lib/rate-limit';
+import { compressImage } from '@/lib/compress-image';
 
 export const runtime = 'nodejs';
 
@@ -23,8 +24,9 @@ async function saveFile(file: File, subdir: string): Promise<string> {
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
   const dir = saveDir(subdir);
   const dest = path.join(dir, filename);
-  const buffer = Buffer.from(await file.arrayBuffer());
-  fs.writeFileSync(dest, buffer);
+  const raw = Buffer.from(await file.arrayBuffer());
+  const compressed = await compressImage(raw, file.type);
+  fs.writeFileSync(dest, compressed);
   return `/api/files/${subdir}/${filename}`;
 }
 
